@@ -1,7 +1,7 @@
 {
     "name": "opendoorafrica/php-skeleton-for-slim3",
     "description": "A Slim 3 Framework skeleton application for rapid REST API development and consumption.",
-    "keywords": ["microframework", "rest", "router", "psr7"],
+    "keywords": ["microframework", "rest", "router", "psr7", "opendoorafrica" "andrew", "ouko", "slim", "slim3"],
     "homepage": "https://github.com/andrewouko/php-skeleton-for-slim3",
     "license": "MIT",
     "authors": [
