@@ -26,7 +26,8 @@
         "psr-4": {
             "Tests\\": "tests/",
             "Provider\\": "provider/",
-            "Services\\": "services/"
+            "Services\\": "services/",
+            "Skeleton\\": "skelelon/"
         }
     },
     "config": {

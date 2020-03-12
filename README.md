@@ -4,3 +4,4 @@ A Slim 3 Framework skeleton application for rapid REST API development and consu
 
 ## DOCUMENTATION
 https://documenter.getpostman.com/view/3741573/SzKVQHf2?version=latest
+
