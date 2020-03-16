@@ -2,23 +2,25 @@
 namespace Skeleton;
 define('SRC_DIRECTORY', __DIR__ . '/../src');
 use Slim\App;
-
 class Skeleton {
     public $settings, $app;
-    private function __construct(string $routes, callable $validateRequest, string $settings = SRC_DIRECTORY . '/settings.php', string $dependencies = SRC_DIRECTORY . '/dependencies.php', string $middleware = SRC_DIRECTORY . '/middleware.php'){
-        $this->settings = require_once $settings;
+    private function __construct(callable $routes, callable $validateRequest, array $settings = [], callable $dependencies = null, callable $middleware = null){
+        if(empty($settings)){
+            $settings = require_once SRC_DIRECTORY . '/settings.php';
+        }
+        $this->settings = $settings;
         $this->app = new App($this->settings);
-
-        $dependencies = require_once $dependencies;
+        if(!$dependencies){
+            $dependencies = require_once SRC_DIRECTORY . '/dependencies.php';
+        }
         $dependencies($this->app);
-
-        $middleware = require_once $middleware;
+        if(!$middleware){
+            $middleware = require_once SRC_DIRECTORY . '/middleware.php';
+        }
         $middleware($this->app, $validateRequest);
-
-        $routes = require_once $routes;
         $routes($this->app);
     }
-    static function init(string $routes, callable $validateRequest){
+    static function init(callable $routes, callable $validateRequest){
         if (PHP_SAPI == 'cli-server') {
             // To help the built-in PHP dev server, check if the request was actually for
             // something which should probably be served as a static file
