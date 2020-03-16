@@ -6,3 +6,4 @@ project-outline
 !/Provider/.env
 !/Provider/Provider.php
 !/Provider/ProviderInterface.php
+/public

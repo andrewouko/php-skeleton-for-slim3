@@ -27,7 +27,7 @@
             "Tests\\": "tests/",
             "Provider\\": "provider/",
             "Services\\": "services/",
-            "Skeleton\\": "skelelon/"
+            "Skeleton\\": "skeleton/"
         }
     },
     "config": {

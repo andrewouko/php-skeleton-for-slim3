@@ -1,5 +1,4 @@
 <?php
-define('VALID_API_PATHS', json_encode(['transaction/inquirys', 'ke/health', '', '', 'ug/categorys', 'ug/validate', 'ke/transaction/status']));
 use Slim\App;
 use Slim\Container;
 use Services\Utils;

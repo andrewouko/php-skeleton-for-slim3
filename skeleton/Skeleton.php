@@ -4,21 +4,19 @@ define('SRC_DIRECTORY', __DIR__ . '/../src');
 use Slim\App;
 
 class Skeleton {
-    private $dependencies, $middleware, $routes;
     public $settings, $app;
     private function __construct(string $routes, callable $validateRequest, string $settings = SRC_DIRECTORY . '/settings.php', string $dependencies = SRC_DIRECTORY . '/dependencies.php', string $middleware = SRC_DIRECTORY . '/middleware.php'){
         $this->settings = require_once $settings;
+        $this->app = new App($this->settings);
 
-        $this->app = new App($settings);
+        $dependencies = require_once $dependencies;
+        $dependencies($this->app);
 
-        $this->dependencies = require_once $dependencies;
-        $this->dependencies($this->app);
+        $middleware = require_once $middleware;
+        $middleware($this->app, $validateRequest);
 
-        $this->middleware = require_once $middleware;
-        $this->middleware($this->app, $validateRequest);
-
-        $this->routes = require_once $routes;
-        $this->routes($this->app);
+        $routes = require_once $routes;
+        $routes($this->app);
     }
     static function init(string $routes, callable $validateRequest){
         if (PHP_SAPI == 'cli-server') {

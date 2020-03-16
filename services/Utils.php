@@ -7,6 +7,8 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Monolog\Logger;
 use GuzzleHttp\Psr7\Request as GuzzleRequest;
+use RuntimeException;
+
 final class Utils{
     static function getRequestInformation(Request $request, array $additional_info = []){
         $uri = $request->getUri();
@@ -226,7 +228,18 @@ final class Utils{
     }
     static function logArrayContent(array $logs, Logger $logger, string $log_level){
         foreach($logs as $title => $info){
-            $log_content =  $title . ": " . (is_string($info)) ? $info : json_encode($info);
+            if(is_string($info) || is_bool($info) || is_int($info) || is_float($info)){}else{
+                $stringed_info = json_encode($info);
+                if(!$stringed_info){
+                    // ob_flush();
+                    // ob_start();
+                    // var_dump($info);
+                    throw new RuntimeException("Unable to convert data to a string. " . gettype($info) . " type found.");
+                }
+                $info = $stringed_info;
+            }
+            $log_content =  $title . ": " . $info;
+            if(is_array($log_content)){var_dump($info); die();}
             $logger->$log_level($log_content);
         }
     }
