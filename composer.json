@@ -25,8 +25,12 @@
     "autoload-dev": {
         "psr-4": {
             "Tests\\": "tests/",
-            "Provider\\": "provider/",
             "Services\\": "services/",
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Provider\\": "provider/",
             "Skeleton\\": "skeleton/"
         }
     },
