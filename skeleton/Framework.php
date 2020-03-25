@@ -2,7 +2,7 @@
 namespace Skeleton;
 define('SRC_DIRECTORY', __DIR__ . '/../src');
 use Slim\App;
-class Skeleton {
+class Framework {
     public $settings, $app;
     private function __construct(callable $routes, callable $validateRequest, array $settings = [], callable $dependencies = null, callable $middleware = null){
         if(empty($settings)){
@@ -12,7 +12,6 @@ class Skeleton {
         $this->app = new App($this->settings);
         if(!$dependencies){
             $dependencies = require_once SRC_DIRECTORY . '/dependencies.php';
-            //
         }
         $dependencies($this->app);
         if(!$middleware){
