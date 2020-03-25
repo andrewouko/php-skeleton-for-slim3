@@ -1,6 +1,5 @@
 <?php
 namespace Services;
-require_once __DIR__ . '/../vendor/autoload.php';
 
 use DateTimeZone;
 use Monolog\Handler\HandlerInterface;
@@ -13,7 +12,6 @@ use Monolog\Processor\ProcessIdProcessor;
 use Monolog\Processor\PsrLogMessageProcessor;
 use Monolog\Processor\UidProcessor;
 use Monolog\Processor\WebProcessor;
-use Dotenv\Dotenv;
 
 class Log{ 
     private $logger;

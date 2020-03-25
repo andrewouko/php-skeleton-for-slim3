@@ -24,14 +24,14 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\": "tests/",
-            "Services\\": "services/"
+            "Tests\\": "tests/"
         }
     },
     "autoload": {
         "psr-4": {
             "Provider\\": "provider/",
-            "Skeleton\\": "skeleton/"
+            "Skeleton\\": "skeleton/",
+            "Services\\": "services/"
         }
     },
     "config": {
