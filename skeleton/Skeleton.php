@@ -12,6 +12,7 @@ class Skeleton {
         $this->app = new App($this->settings);
         if(!$dependencies){
             $dependencies = require_once SRC_DIRECTORY . '/dependencies.php';
+            //
         }
         $dependencies($this->app);
         if(!$middleware){
