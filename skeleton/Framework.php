@@ -2,9 +2,13 @@
 namespace Skeleton;
 define('SRC_DIRECTORY', __DIR__ . '/../src');
 use Slim\App;
+use Dotenv\Dotenv;
 class Framework {
     public $settings, $app;
-    private function __construct(callable $routes, callable $validateRequest, array $settings = [], callable $dependencies = null, callable $middleware = null){
+    private function __construct(callable $routes, callable $validateRequest, string $env_file_path, array $settings = [], callable $dependencies = null, callable $middleware = null){
+        // var_dump($env_file_path);
+        $dotenv = Dotenv::createImmutable($env_file_path);
+        $dotenv->load();
         if(empty($settings)){
             $settings = require_once SRC_DIRECTORY . '/settings.php';
         }
@@ -20,7 +24,7 @@ class Framework {
         $middleware($this->app, $validateRequest);
         $routes($this->app);
     }
-    static function init(callable $routes, callable $validateRequest){
+    static function init(callable $routes, callable $validateRequest, string $env_file_path){
         if (PHP_SAPI == 'cli-server') {
             // To help the built-in PHP dev server, check if the request was actually for
             // something which should probably be served as a static file
@@ -33,7 +37,7 @@ class Framework {
 
         session_start();
 
-        $instance = new Self($routes, $validateRequest);
+        $instance = new Self($routes, $validateRequest, $env_file_path);
         $instance->app->run();
         return $instance;
     }

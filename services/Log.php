@@ -27,8 +27,6 @@ class Log{
         $this->chanel_name = $application_name . '.' . $channel_name;
         $this->logger = new Logger($this->chanel_name);
         if(!isset($handler)){
-            $dotenv = Dotenv::createImmutable(dirname(__DIR__));
-            $dotenv->load();
             $current_time = new \DateTime(null, new \DateTimeZone('Africa/Nairobi'));
             $this->logger->pushHandler(new StreamHandler($_ENV['default_log_file_path'] . $current_time->format('Y-m-d').'.log'));
         }
