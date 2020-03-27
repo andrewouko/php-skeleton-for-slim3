@@ -3,16 +3,22 @@ namespace Skeleton;
 define('SRC_DIRECTORY', __DIR__ . '/../src');
 use Slim\App;
 use Dotenv\Dotenv;
+use InvalidArgumentException;
 use RuntimeException;
+use Monolog\Handler\HandlerInterface;
 
 class Framework {
     public $settings, $app;
-    private function __construct(callable $routes, array $entry_middleware_callables = [], string $env_file_path = '', array $settings = [], callable $dependencies = null, callable $middleware = null){
+    private function __construct(callable $routes, array $settings = [], array $entry_middleware_callables = [], string $env_file_path = '', callable $dependencies = null, callable $middleware = null){
         $this->initEnvrionment($env_file_path);
-        if(empty($settings)){
-            $settings = require_once SRC_DIRECTORY . '/settings.php';
+        $this->settings = require_once SRC_DIRECTORY . '/settings.php';
+        if(in_array('displayErrorDetails', array_keys($settings)) && !is_bool($settings['displayErrorDetails'])){
+            throw new InvalidArgumentException("displayErrorDetails setting must be a boolean");
         }
-        $this->settings = $settings;
+        if(in_array('log', array_keys($settings)) && !$settings['log'] instanceof HandlerInterface){
+            throw new InvalidArgumentException("The `log` setting must be a Monolog\Handler instance.");
+        }
+        $this->settings->settings = array_merge($this->settings->settings, $settings);
         $this->app = new App($this->settings);
         if(!$dependencies){
             $dependencies = require_once SRC_DIRECTORY . '/dependencies.php';
@@ -24,7 +30,7 @@ class Framework {
         $middleware($this->app, $entry_middleware_callables);
         $routes($this->app);
     }
-    static function init(callable $routes, array $entry_middleware_callables = []){
+    static function init(callable $routes, array $settings = [], array $entry_middleware_callables = []){
         if (PHP_SAPI == 'cli-server') {
             // To help the built-in PHP dev server, check if the request was actually for
             // something which should probably be served as a static file
@@ -37,7 +43,7 @@ class Framework {
 
         session_start();
 
-        $instance = new Self($routes, $entry_middleware_callables);
+        $instance = new Self($routes, $settings, $entry_middleware_callables);
         $instance->app->run();
         return $instance;
     }
