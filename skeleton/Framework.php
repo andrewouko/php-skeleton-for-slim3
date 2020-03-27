@@ -3,9 +3,7 @@ namespace Skeleton;
 define('SRC_DIRECTORY', __DIR__ . '/../src');
 use Slim\App;
 use Dotenv\Dotenv;
-use Exception;
 use RuntimeException;
-use SebastianBergmann\Environment\Runtime;
 
 class Framework {
     public $settings, $app;
@@ -26,7 +24,7 @@ class Framework {
         $middleware($this->app, $validateRequest);
         $routes($this->app);
     }
-    static function init(callable $routes, callable $validateRequest, string $env_file_path){
+    static function init(callable $routes, callable $validateRequest){
         if (PHP_SAPI == 'cli-server') {
             // To help the built-in PHP dev server, check if the request was actually for
             // something which should probably be served as a static file
@@ -39,7 +37,7 @@ class Framework {
 
         session_start();
 
-        $instance = new Self($routes, $validateRequest, $env_file_path);
+        $instance = new Self($routes, $validateRequest);
         $instance->app->run();
         return $instance;
     }
