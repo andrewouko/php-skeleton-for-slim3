@@ -26,8 +26,8 @@ Skeleton class functionalties
 * Provide an array of callables - that take Slim\Container and Psr\Http\Message\ServerRequestInterface as arguments - to be executed in the Entry Middleware.
 2. Initialise the environment variables
 -----------------
-* APP_ENV -> the environment context to run the application in. Mandatory parameter.
-* default_log_file -> path/to/logs/folder. Optional/Redundant if a handler is provided for logging in the dependencies.
+* APP_ENV : the environment context to run the application in. Mandatory parameter.
+* default_log_file : path/to/logs/folder. Optional/Redundant if a handler is provided for logging in the dependencies.
 
 3. Useful abstract and interface classes
 -------------------
