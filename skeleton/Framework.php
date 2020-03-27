@@ -3,12 +3,14 @@ namespace Skeleton;
 define('SRC_DIRECTORY', __DIR__ . '/../src');
 use Slim\App;
 use Dotenv\Dotenv;
+use Exception;
+use RuntimeException;
+use SebastianBergmann\Environment\Runtime;
+
 class Framework {
     public $settings, $app;
-    private function __construct(callable $routes, callable $validateRequest, string $env_file_path, array $settings = [], callable $dependencies = null, callable $middleware = null){
-        // var_dump($env_file_path);
-        $dotenv = Dotenv::createImmutable($env_file_path);
-        $dotenv->load();
+    private function __construct(callable $routes, callable $validateRequest, string $env_file_path = '', array $settings = [], callable $dependencies = null, callable $middleware = null){
+        $this->initEnvrionment($env_file_path);
         if(empty($settings)){
             $settings = require_once SRC_DIRECTORY . '/settings.php';
         }
@@ -40,5 +42,13 @@ class Framework {
         $instance = new Self($routes, $validateRequest, $env_file_path);
         $instance->app->run();
         return $instance;
+    }
+    private function initEnvrionment(string $env_file_path){
+        if(!empty($env_file_path)){
+            $dotenv = Dotenv::createImmutable($env_file_path);
+            $dotenv->load();
+        }
+        //check if the application environment context is set
+        if(!isset($_ENV['APP_ENV'])) throw new RuntimeException("Unable to determine the application execution context. The APP_ENV environment variable is NOT set.");
     }
 }
