@@ -1,13 +1,12 @@
 <?php
 use Services\Log;
-use Services\Validation;
+use Services\HTTP_Validation;
 use Services\Error;
 use Services\Utils;
 use Slim\App;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request as GuzzleRequest;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
-use Services\HTTP_Validation;
 
 return function (App $app) {
     $container = $app->getContainer();
