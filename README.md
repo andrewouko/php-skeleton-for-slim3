@@ -35,7 +35,7 @@ Skeleton class functionalties
 * The 3rd Party API related code must extend Provider\Provider Abstract class (which implements ProviderInterface). 
 * * This class found in the project's Github tree provides useful functionality for handling 3rd Party API calls reliably.
 
-# Sample Skeleon Usage
+# Sample Skeleton Usage
 ## <a name="entry_file">Entry file example</a>
 ```php
 define('VALID_API_PATHS', json_encode(['transaction', 'inquirys', 'health']));
