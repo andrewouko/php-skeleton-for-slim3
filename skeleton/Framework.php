@@ -7,7 +7,7 @@ use RuntimeException;
 
 class Framework {
     public $settings, $app;
-    private function __construct(callable $routes, callable $validateRequest, string $env_file_path = '', array $settings = [], callable $dependencies = null, callable $middleware = null){
+    private function __construct(callable $routes, array $entry_middleware_callables = [], string $env_file_path = '', array $settings = [], callable $dependencies = null, callable $middleware = null){
         $this->initEnvrionment($env_file_path);
         if(empty($settings)){
             $settings = require_once SRC_DIRECTORY . '/settings.php';
@@ -21,10 +21,10 @@ class Framework {
         if(!$middleware){
             $middleware = require_once SRC_DIRECTORY . '/middleware.php';
         }
-        $middleware($this->app, $validateRequest);
+        $middleware($this->app, $entry_middleware_callables);
         $routes($this->app);
     }
-    static function init(callable $routes, callable $validateRequest){
+    static function init(callable $routes, array $entry_middleware_callables = []){
         if (PHP_SAPI == 'cli-server') {
             // To help the built-in PHP dev server, check if the request was actually for
             // something which should probably be served as a static file
@@ -37,7 +37,7 @@ class Framework {
 
         session_start();
 
-        $instance = new Self($routes, $validateRequest);
+        $instance = new Self($routes, $entry_middleware_callables);
         $instance->app->run();
         return $instance;
     }

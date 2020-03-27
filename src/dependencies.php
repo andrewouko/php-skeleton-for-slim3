@@ -7,6 +7,7 @@ use Slim\App;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request as GuzzleRequest;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
+use Services\HTTP_Validation;
 
 return function (App $app) {
     $container = $app->getContainer();
@@ -43,8 +44,8 @@ return function (App $app) {
     };
 
     // HTTP REQUEST VALIDATION SERVICE
-    $container['validation'] = function($c) {
-        return new Validation();
+    $container['http_validation'] = function($c) {
+        return new HTTP_Validation();
     };
 
     // DEFAULT ERROR HANDLING SERVICE

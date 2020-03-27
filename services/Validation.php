@@ -3,7 +3,7 @@ namespace Services;
 
 use InvalidArgumentException;
 
-class Validation {
+class HTTP_Validation {
     private $parameters;
     function __construct(array $params = [])
     {

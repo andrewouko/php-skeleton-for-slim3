@@ -21,17 +21,20 @@ function logResponseInformation(Container $container, Response $response) {
     Utils::logArrayContent(Utils::getResponseInformation($response), $logger, 'info');
 }
 
-return function (App $app, callable $validateRequest) {
+return function (App $app, array $entry_middleware_callables = []) {
 
     //entry middleware
-    $app->add(function (Request $request, Response $response, callable $next) use ($app, $validateRequest) {
+    $app->add(function (Request $request, Response $response, callable $next) use ($app, $entry_middleware_callables) {
         $container = $app->getContainer();
         logServerState($container);
         logRequestInformation($container, $request);
         try{
-            $validateRequest($container, $request);
+            foreach($entry_middleware_callables as $callable){
+                if(!is_callable($callable)) throw new InvalidArgumentException("Each element of the entry_middleware_callables array must be a callable");
+                $callable($container, $request);
+            }
         } catch(Exception $e){
-            $error_obj = new Error($request, $e, 'Middleware Request Validation Error');
+            $error_obj = new Error($request, $e, 'Entry Middleware Error');
             // var_dump($error_obj->error);
             $error_logger = $container['error_logger'];
             Utils::logArrayContent($error_obj->error, $error_logger, 'error');
@@ -43,7 +46,7 @@ return function (App $app, callable $validateRequest) {
     });
 
 
-    // exit middleware
+    // mandatory exit middleware
     $app->add(function (Request $request, Response $response, callable $next) use ($app) {
         $container = $app->getContainer();
         $response = $next($request, $response);
