@@ -85,4 +85,10 @@ $routes  = function(App $app){
         return $processRequest(new APIHealth());
     });
 };
-Framework::init($routes, [$validateRequest]);
+$settings = [
+    'application' => [
+            'name' => 'Default Application Name',
+            'description' => 'This application handles the client side calls amd responses...'
+        ],  
+];
+$framework = Framework::init($routes, $settings, [$validateRequest]);
