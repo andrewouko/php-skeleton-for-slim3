@@ -18,7 +18,7 @@ class Framework {
         if(in_array('log', array_keys($settings)) && !$settings['log'] instanceof HandlerInterface){
             throw new InvalidArgumentException("The `log` setting must be a Monolog\Handler instance.");
         }
-        $this->settings->settings = array_merge($this->settings->settings, $settings);
+        $this->settings['settings'] = array_merge($this->settings['settings'], $settings);
         $this->app = new App($this->settings);
         if(!$dependencies){
             $dependencies = require_once SRC_DIRECTORY . '/dependencies.php';

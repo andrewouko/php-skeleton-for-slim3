@@ -8,7 +8,7 @@ use Services\Error;
 
 function logServerState(Container $container)  {
     $logger = $container->get('system_logger');
-    Utils::logArrayContent(Utils::getServerState(), $logger, 'debug');
+    Utils::logArrayContent(array_merge(Utils::getServerState()), $logger, 'debug');
 }
 
 function logRequestInformation(Container $container, Request $request) {
