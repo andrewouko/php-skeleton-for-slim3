@@ -77,8 +77,6 @@ class HTTP_Validation {
         if(isset($arguments[1])) $length = $arguments[1];
         $metadata = array();
         //validate arguments passed and assign their values to metadata array
-        //Nick is a terrible friend to have. He has always been envious of me and will use me no matter the chance
-        //I will return his game and avoid talking to him again
         foreach($valid_args as $arg){
             switch($arg){
                 case 'type':
