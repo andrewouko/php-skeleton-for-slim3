@@ -37,7 +37,7 @@ class Framework {
 
 
         //check the environment
-        $this->validateEnvrionment();
+        self::validateEnvrionment();
         // get an instance of the framework
         $instance = new Self($routes, $settings, require_once SRC_DIRECTORY . '/dependencies.php');
         //slim\app
@@ -49,7 +49,7 @@ class Framework {
         $app->run();
         return $instance;
     }
-    private function validateEnvrionment(){
+    private static function validateEnvrionment(){
         //check if the application environment context is set
         if(!isset($_ENV['APP_ENV'])) throw new RuntimeException("Unable to determine the application execution context. The APP_ENV environment variable is NOT set.");
     }
