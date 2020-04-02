@@ -20,7 +20,7 @@ function logResponseInformation(Container $container, Response $response) {
     $logger = $container->get('http_logger');
     Utils::logArrayContent(Utils::getResponseInformation($response), $logger, 'info');
 }
-$middlewareHandler = function(string $name, array $middleware_callables, App $app, Request $request){
+$middlewareHandler = function(string $name, array $middleware_callables, App $app, Request $request, Response $response){
     try{
         foreach($middleware_callables as $callable){
             if(!is_callable($callable)) throw new InvalidArgumentException("Each element of the entry_middleware_callables array must be a callable");
@@ -44,7 +44,7 @@ return function (App $app, array $entry_middleware_callables = [], array $exit_m
         $container = $app->getContainer();
         logServerState($container);
         logRequestInformation($container, $request);
-        $middlewareHandler('Entry Middlware', $entry_middleware_callables, $app, $request);
+        $middlewareHandler('Entry Middlware', $entry_middleware_callables, $app, $request, $response);
         return $next($request, $response);
     });
 
@@ -54,7 +54,7 @@ return function (App $app, array $entry_middleware_callables = [], array $exit_m
         $container = $app->getContainer();
         $response = $next($request, $response);
         logResponseInformation($container, $response);
-        $middlewareHandler('Exit Middlware', $exit_middleware_callables, $app, $request);
+        $middlewareHandler('Exit Middlware', $exit_middleware_callables, $app, $request, $response);
         return $response;
     });
 
