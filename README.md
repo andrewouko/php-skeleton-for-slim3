@@ -22,15 +22,14 @@ Skeleton class functionalties
 1. Initialise the framework
 -------------------
 1. Use Skeleton\Framework::init method initialise the framework.
-* Provide a callable that takes Slim\App as an argument and has valid routes as specified [here](http://www.slimframework.com/docs/v3/objects/router.html#how-to-create-routes) in the slim documentation.
-* Provide an array of callables - that take Slim\Container and Psr\Http\Message\ServerRequestInterface as arguments - to be executed in the Entry Middleware.
 ---------------------
 2. Initialise the environment variables
 -----------------
 * APP_ENV : the environment context to run the application in. Mandatory parameter.
+* default_config_path : path/to/config.ini. Credentials path. Optional/Redudant if the provider is initialised with credentials path provided.
 * default_log_file : path/to/logs/folder. Optional/Redundant if a handler is provided for logging in the dependencies.
 --------------------------------------
-3. Useful abstract and interface classes
+1. Useful abstract and interface classes
 -------------------
 * The 3rd Party API related code must extend Provider\Provider Abstract class (which implements ProviderInterface). 
 * * This class found in the project's Github tree provides useful functionality for handling 3rd Party API calls reliably.

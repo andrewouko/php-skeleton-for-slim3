@@ -20,37 +20,41 @@ function logResponseInformation(Container $container, Response $response) {
     $logger = $container->get('http_logger');
     Utils::logArrayContent(Utils::getResponseInformation($response), $logger, 'info');
 }
+$middlewareHandler = function(string $name, array $middleware_callables, App $app, Request $request){
+    try{
+        foreach($middleware_callables as $callable){
+            if(!is_callable($callable)) throw new InvalidArgumentException("Each element of the entry_middleware_callables array must be a callable");
+            $callable($app, $request);
+        }
+    } catch(Exception $e){
+        $error_obj = new Error($request, $e, ucwords(strtolower($name)) . ' Error');
+        // var_dump($error_obj->error);
+        $container = $app->getContainer();
+        $error_logger = $container['error_logger'];
+        Utils::logArrayContent($error_obj->error, $error_logger, 'error');
+        return $response->withStatus(400)
+        ->withHeader('Content-Type', 'application/json')
+        ->write(Utils::formatJsonResponse('', $error_obj->error['Message']));
+    }
+};
+return function (App $app, array $entry_middleware_callables = [], array $exit_middleware_callables = []) use ($middlewareHandler) {
 
-return function (App $app, array $entry_middleware_callables = []) {
-
-    //entry middleware
-    $app->add(function (Request $request, Response $response, callable $next) use ($app, $entry_middleware_callables) {
+    // entry middleware
+    $app->add(function (Request $request, Response $response, callable $next) use ($app, $entry_middleware_callables, $middlewareHandler) {
         $container = $app->getContainer();
         logServerState($container);
         logRequestInformation($container, $request);
-        try{
-            foreach($entry_middleware_callables as $callable){
-                if(!is_callable($callable)) throw new InvalidArgumentException("Each element of the entry_middleware_callables array must be a callable");
-                $callable($container, $request);
-            }
-        } catch(Exception $e){
-            $error_obj = new Error($request, $e, 'Entry Middleware Error');
-            // var_dump($error_obj->error);
-            $error_logger = $container['error_logger'];
-            Utils::logArrayContent($error_obj->error, $error_logger, 'error');
-            return $response->withStatus(400)
-            ->withHeader('Content-Type', 'application/json')
-            ->write(Utils::formatJsonResponse('', $error_obj->error['Message']));
-        }
+        $middlewareHandler('Entry Middlware', $entry_middleware_callables, $app, $request);
         return $next($request, $response);
     });
 
 
-    // mandatory exit middleware
-    $app->add(function (Request $request, Response $response, callable $next) use ($app) {
+    // exit middleware
+    $app->add(function (Request $request, Response $response, callable $next) use ($app, $middlewareHandler, $exit_middleware_callables) {
         $container = $app->getContainer();
         $response = $next($request, $response);
         logResponseInformation($container, $response);
+        $middlewareHandler('Exit Middlware', $exit_middleware_callables, $app, $request);
         return $response;
     });
 
