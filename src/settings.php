@@ -2,7 +2,7 @@
 
 return [
     'settings' => [
-        'displayErrorDetails' => $_ENV['APP_ENV'] == 'development', // set to false in production
+        'displayErrorDetails' => true, // set to false in production
 
         // application metadata
         'application' => [
