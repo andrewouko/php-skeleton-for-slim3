@@ -15,7 +15,12 @@ abstract class Provider implements ProviderInterface {
     }
 
     protected function getGuzzleRequest(string $method, string $url, array $headers, string $request_data):Request{
-        return new Request($method, $url, $headers, $request_data);
+        $request_headers = [];
+        foreach($headers as $header){
+            $h = explode(':', $header);
+            $request_headers[$h[0]] = trim($h[1]);
+        }
+        return new Request($method, $url, $request_headers, $request_data);
     }
     abstract function initialiseEnvironment(string $environment);
     abstract function getRequest(stdClass $sanitized_input = null):Request;

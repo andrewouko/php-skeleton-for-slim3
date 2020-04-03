@@ -83,6 +83,7 @@ final class Utils{
             'response_status' => $response->getStatusCode(),
             'response_headers' => $response->getHeaders(),
             'response_body' => [
+                'body' => (string) $body,
                 'contents' => $body->getContents(),
                 'size' => $body->getSize(),
                 'seekable' => $body->isSeekable(),
@@ -251,10 +252,10 @@ final class Utils{
             }
         }
         if($data){
-            return json_encode(['data' => $data]);
+            return json_encode(['data' => $data], JSON_UNESCAPED_SLASHES);
         }
         if($error){
-            return json_encode(['error' => $error]);
+            return json_encode(['error' => $error], JSON_UNESCAPED_SLASHES);
         }
     }
 }

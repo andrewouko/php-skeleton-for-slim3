@@ -23,7 +23,7 @@ function logResponseInformation(Container $container, Response $response) {
 $middlewareHandler = function(string $name, array $middleware_callables, App $app, Request $request, Response $response){
     try{
         foreach($middleware_callables as $callable){
-            if(!is_callable($callable)) throw new InvalidArgumentException("Each element of the entry_middleware_callables array must be a callable");
+            if(!is_callable($callable)) throw new InvalidArgumentException("Each element of the middleware_callables array must be a callable");
             $callable($app, $request);
         }
     } catch(Exception $e){
@@ -36,6 +36,7 @@ $middlewareHandler = function(string $name, array $middleware_callables, App $ap
         ->withHeader('Content-Type', 'application/json')
         ->write(Utils::formatJsonResponse('', $error_obj->error['Message']));
     }
+    return;
 };
 return function (App $app, array $entry_middleware_callables = [], array $exit_middleware_callables = []) use ($middlewareHandler) {
 
@@ -44,7 +45,10 @@ return function (App $app, array $entry_middleware_callables = [], array $exit_m
         $container = $app->getContainer();
         logServerState($container);
         logRequestInformation($container, $request);
-        $middlewareHandler('Entry Middlware', $entry_middleware_callables, $app, $request, $response);
+        $res = $middlewareHandler('Entry Middlware', $entry_middleware_callables, $app, $request, $response);
+        if($res){
+            return $res;
+        }
         return $next($request, $response);
     });
 
