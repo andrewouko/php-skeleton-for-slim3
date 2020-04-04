@@ -2,11 +2,8 @@
 namespace Skeleton;
 define('SRC_DIRECTORY', __DIR__ . '/../src');
 use Slim\App;
-use Dotenv\Dotenv;
 use InvalidArgumentException;
-use RuntimeException;
 use Monolog\Handler\HandlerInterface;
-use Monolog\Handler\StreamHandler;
 
 class Framework {
     public $settings, $app;
