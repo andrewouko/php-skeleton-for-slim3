@@ -6,13 +6,14 @@ use Provider\ProviderInterface;
 
 abstract class Provider implements ProviderInterface {
     protected $credentials;
-    function __construct(string $environment, string $credentials_dir){
+    function __construct(string $environment){
         $this->initialiseEnvironment($environment);
+    }
+    protected function initialiseCredentials(string $credentials_dir){
         if(is_readable($credentials_dir)){
             $this->credentials = (object) parse_ini_file($credentials_dir, true, INI_SCANNER_RAW);
         } else throw new \InvalidArgumentException("The credentials path provided is invalid. Path provided: " . $credentials_dir);
     }
-
     protected function getGuzzleRequest(string $method, string $url, array $headers, string $request_data):Request{
         $request_headers = [];
         foreach($headers as $header){
