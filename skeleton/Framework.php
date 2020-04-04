@@ -40,7 +40,7 @@ class Framework {
 
         session_start();
         $default_settings = require_once SRC_DIRECTORY . '/settings.php';
-        $settings = array_merge($default_settings['settings'], $settings);
+        $$default_settings['settings'] = array_merge($default_settings['settings'], $settings);
         // get an instance of the framework
         $instance = new Self($routes, $settings, require_once SRC_DIRECTORY . '/dependencies.php');
         //slim\app
