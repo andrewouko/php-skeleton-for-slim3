@@ -40,7 +40,7 @@ class HTTP_Validation {
                 if(((is_null($length) && strlen($val)) || (!is_null($length) &&  strlen((string)abs($val)) <= $length)) && is_int($val)) return true; else throw new \InvalidArgumentException($name . " must be an int and length of " . $length . ". Provided: " . gettype($val) . " of length " . strlen($val) . " provided. Value provided: " . $val);
                 break;
             case 'optional':
-                if(gettype($val) != null && !is_null($length) && (strlen($val) <= $length)) return true; else throw new \InvalidArgumentException($name . " is optional and should have length of " . (int) $length . ". Provided: " . gettype($val) . " of length " . strlen($val) . " provided. Value provided: " . $val);
+                if((isset($val) && (gettype($val) != null && !is_null($length) && (strlen($val) <= $length))) || !isset($val)) return true; else throw new \InvalidArgumentException($name . " is optional and should have length of " . (int) $length . ". Provided: " . gettype($val) . " of length " . strlen($val) . " provided. Value provided: " . $val);
                 break;
             default:
                 throw new \InvalidArgumentException($name . " is using an unsupported type " . $type);
