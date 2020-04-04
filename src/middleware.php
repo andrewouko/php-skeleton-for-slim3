@@ -16,10 +16,6 @@ function logRequestInformation(Container $container, Request $request) {
     $request_inforamtion = Utils::getRequestInformation($request);
     Utils::logArrayContent($request_inforamtion, $logger, 'debug');
 }
-function logResponseInformation(Container $container, Response $response) {
-    $logger = $container->get('http_logger');
-    Utils::logArrayContent(Utils::getResponseInformation($response), $logger, 'info');
-}
 $middlewareHandler = function(string $name, array $middleware_callables, App $app, Request $request, Response $response){
     try{
         foreach($middleware_callables as $callable){
@@ -57,7 +53,7 @@ return function (App $app, array $entry_middleware_callables = [], array $exit_m
     $app->add(function (Request $request, Response $response, callable $next) use ($app, $middlewareHandler, $exit_middleware_callables) {
         $container = $app->getContainer();
         $response = $next($request, $response);
-        logResponseInformation($container, $response);
+        $container['response-logger']($container, $response);
         $middlewareHandler('Exit Middlware', $exit_middleware_callables, $app, $request, $response);
         return $response;
     });

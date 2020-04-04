@@ -7,6 +7,7 @@ use Slim\App;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request as GuzzleRequest;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
+use Slim\Container;
 
 return function (App $app) {
     $container = $app->getContainer();
@@ -45,6 +46,12 @@ return function (App $app) {
     // HTTP REQUEST VALIDATION SERVICE
     $container['http_validation'] = function($c) {
         return new HTTP_Validation();
+    };
+
+    // LOG Ps-r 7 response
+    $container['response-logger'] = function (Container $container, Response $response) {
+        $logger = $container->get('http_logger');
+        Utils::logArrayContent(Utils::getResponseInformation($response), $logger, 'info');
     };
 
     // DEFAULT ERROR HANDLING SERVICE
