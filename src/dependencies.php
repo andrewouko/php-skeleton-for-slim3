@@ -49,9 +49,11 @@ return function (App $app) {
     };
 
     // LOG Ps-r 7 response
-    $container['response-logger'] = function (Container $container, Response $response) {
-        $logger = $container->get('http_logger');
-        Utils::logArrayContent(Utils::getResponseInformation($response), $logger, 'info');
+    $container['response-logger'] = function($c) {
+        return function (Response $response) use ($c) {
+            $logger = $c->get('http_logger');
+            Utils::logArrayContent(Utils::getResponseInformation($response), $logger, 'info');
+        };
     };
 
     // DEFAULT ERROR HANDLING SERVICE

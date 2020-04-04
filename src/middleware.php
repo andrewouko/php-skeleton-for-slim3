@@ -53,7 +53,7 @@ return function (App $app, array $entry_middleware_callables = [], array $exit_m
     $app->add(function (Request $request, Response $response, callable $next) use ($app, $middlewareHandler, $exit_middleware_callables) {
         $container = $app->getContainer();
         $response = $next($request, $response);
-        $container['response-logger']($container, $response);
+        $container['response-logger']($response);
         $middlewareHandler('Exit Middlware', $exit_middleware_callables, $app, $request, $response);
         return $response;
     });
