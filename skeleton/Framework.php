@@ -23,8 +23,8 @@ class Framework {
         if(!in_array('displayErrorDetails', array_keys($settings)) || !is_bool($settings['displayErrorDetails'])){
             throw new InvalidArgumentException("`displayErrorDetails` setting must be a boolean");
         }
-        if(!in_array('log', array_keys($settings)) || !$settings['log'] instanceof HandlerInterface){
-            throw new InvalidArgumentException("The `log` setting must be a Monolog\Handler instance.");
+        if(!isset($settings['log']['handler']) || !$settings['log']['handler'] instanceof HandlerInterface){
+            throw new InvalidArgumentException("The `log` setting must be a Monolog\Handler instance. Instance of " . gettype($settings['log']['handler']) . " provided.");
         }
     }
     static function init(callable $routes, array $settings = [], array $entry_middleware = [], array $exit_middleware = []){
@@ -40,9 +40,11 @@ class Framework {
 
         session_start();
         $default_settings = require_once SRC_DIRECTORY . '/settings.php';
-        $$default_settings['settings'] = array_merge($default_settings['settings'], $settings);
+        $default_settings['settings'] = array_merge($default_settings['settings'], $settings);
+        $default_dependencies = require_once SRC_DIRECTORY . '/dependencies.php';
         // get an instance of the framework
-        $instance = new Self($routes, $settings, require_once SRC_DIRECTORY . '/dependencies.php');
+        // var_dump($default_settings);
+        $instance = new Self($routes, $default_settings, $default_dependencies);
         //slim\app
         $app = $instance->app;
         //register the middleware
