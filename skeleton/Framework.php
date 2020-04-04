@@ -6,21 +6,26 @@ use Dotenv\Dotenv;
 use InvalidArgumentException;
 use RuntimeException;
 use Monolog\Handler\HandlerInterface;
+use Monolog\Handler\StreamHandler;
 
 class Framework {
     public $settings, $app;
     private function __construct(callable $routes, array $settings, callable $dependencies){
-        $this->settings = require_once SRC_DIRECTORY . '/settings.php';
-        if(in_array('displayErrorDetails', array_keys($settings)) && !is_bool($settings['displayErrorDetails'])){
-            throw new InvalidArgumentException("displayErrorDetails setting must be a boolean");
-        }
-        if(in_array('log', array_keys($settings)) && !$settings['log'] instanceof HandlerInterface){
-            throw new InvalidArgumentException("The `log` setting must be a Monolog\Handler instance.");
-        }
-        $this->settings['settings'] = array_merge($this->settings['settings'], $settings);
+        $this->validateSettings($settings);
+        $this->settings = $settings;
         $this->app = new App($this->settings);
         $dependencies($this->app);
         $routes($this->app);
+    }
+    private function validateSettings(array $settings_array){
+        if(!array_key_exists('settings', $settings_array)) throw new InvalidArgumentException("The settings key must exist in the settings array");
+        $settings = $settings_array['settings'];
+        if(!in_array('displayErrorDetails', array_keys($settings)) || !is_bool($settings['displayErrorDetails'])){
+            throw new InvalidArgumentException("`displayErrorDetails` setting must be a boolean");
+        }
+        if(!in_array('log', array_keys($settings)) || !$settings['log'] instanceof HandlerInterface){
+            throw new InvalidArgumentException("The `log` setting must be a Monolog\Handler instance.");
+        }
     }
     static function init(callable $routes, array $settings = [], array $entry_middleware = [], array $exit_middleware = []){
         if (PHP_SAPI == 'cli-server') {
@@ -34,6 +39,8 @@ class Framework {
         }
 
         session_start();
+        $default_settings = require_once SRC_DIRECTORY . '/settings.php';
+        $settings = array_merge($default_settings['settings'], $settings);
         // get an instance of the framework
         $instance = new Self($routes, $settings, require_once SRC_DIRECTORY . '/dependencies.php');
         //slim\app
