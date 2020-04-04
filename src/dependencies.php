@@ -8,6 +8,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request as GuzzleRequest;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
 use Slim\Container;
+use Slim\Http\Response;
 
 return function (App $app) {
     $container = $app->getContainer();
