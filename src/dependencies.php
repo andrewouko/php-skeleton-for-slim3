@@ -57,8 +57,8 @@ return function (App $app) {
             Utils::logArrayContent($error_obj->error, $error_logger, 'critical');
             return $response->withStatus(500)
                 ->withHeader('Content-Type', 'application/json')
-                // ->write("Something went wrong!\n" . $error_obj->error['resolution']);
                 >write(Utils::formatJsonResponse('', $error_obj->error['Message']));
+                // ->write("Something went wrong!\n" . $error_obj->error['resolution']);
         };
     };
 
