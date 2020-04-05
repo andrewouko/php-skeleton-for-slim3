@@ -37,6 +37,9 @@ $middlewareHandler = function(string $name, array $middleware_callables, App $ap
     }
     return;
 };
+
+// cors middleware
+
 return function (App $app, array $entry_middleware_callables = [], array $exit_middleware_callables = []) use ($middlewareHandler) {
 
     // entry middleware
@@ -46,12 +49,10 @@ return function (App $app, array $entry_middleware_callables = [], array $exit_m
         logRequestInformation($container, $request);
         $res = $middlewareHandler('Entry Middleware', $entry_middleware_callables, $app, $request, $response);
         if($res){
-            return $res;
+            $response = $res;
         }
         return $next($request, $response);
     });
-
-    $app->add(new Tuupola\Middleware\CorsMiddleware);
 
     // exit middleware
     $app->add(function (Request $request, Response $response, callable $next) use ($app, $middlewareHandler, $exit_middleware_callables) {
@@ -62,4 +63,13 @@ return function (App $app, array $entry_middleware_callables = [], array $exit_m
         return $next($request, $response);
     });
 
+
+    //cors middleware
+    $app->add(function (Request $request, Response $response, callable $next) {
+        $response = $next($request, $response);
+        return $response
+                ->withHeader('Access-Control-Allow-Origin', '*')
+                ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
+                ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+    });
 };
