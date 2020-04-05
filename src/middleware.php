@@ -4,7 +4,6 @@ use Slim\Container;
 use Services\Utils;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
-use GuzzleHttp\Psr7\Response as GuzzleResponse;
 use Services\Error;
 
 function logServerState(Container $container)  {
@@ -51,7 +50,7 @@ return function (App $app, array $entry_middleware_callables = [], array $exit_m
 
 
     // exit middleware
-    $app->add(function (Request $request, GuzzleResponse $response, callable $next) use ($app, $middlewareHandler, $exit_middleware_callables) {
+    $app->add(function (Request $request, Response $response, callable $next) use ($app, $middlewareHandler, $exit_middleware_callables) {
         $container = $app->getContainer();
         $response = $next($request, $response);
         $container['response-logger']($response);
