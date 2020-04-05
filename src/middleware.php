@@ -44,7 +44,7 @@ return function (App $app, array $entry_middleware_callables = [], array $exit_m
         $container = $app->getContainer();
         logServerState($container);
         logRequestInformation($container, $request);
-        $res = $middlewareHandler('Entry Middlware', $entry_middleware_callables, $app, $request, $response);
+        $res = $middlewareHandler('Entry Middleware', $entry_middleware_callables, $app, $request, $response);
         if($res){
             return $res;
         }
@@ -57,11 +57,8 @@ return function (App $app, array $entry_middleware_callables = [], array $exit_m
         $container = $app->getContainer();
         $response = $next($request, $response);
         logResponseInformation($container, $response);
-        $middlewareHandler('Exit Middlware', $exit_middleware_callables, $app, $request, $response);
-        return $response
-            ->withHeader('Access-Control-Allow-Headers', array('Content-Type', 'X-Requested-With', 'Authorization'))
-            ->withHeader('Access-Control-Allow-Methods', array('GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'))
-            ->withHeader('Content-Type', 'application/json');
+        $middlewareHandler('Exit Middleware', $exit_middleware_callables, $app, $request, $response);
+        return $response;
     });
 
 
