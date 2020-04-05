@@ -49,9 +49,9 @@ return function (App $app) {
 
     // LOG Ps-r 7 response
     $container['response-logger'] = function($c) {
-        return function ($response) use ($c) {
+        return function (GuzzleResponse $response) use ($c) {
             $logger = $c->get('http_logger');
-            Utils::logArrayContent(Utils::getResponseInformation($response), $logger, 'info');
+            Utils::logArrayContent(Utils::getGuzzleResponseInformation($response), $logger, 'info');
         };
     };
 

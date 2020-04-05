@@ -10,7 +10,10 @@ function logServerState(Container $container)  {
     $logger = $container->get('system_logger');
     Utils::logArrayContent(array_merge(Utils::getServerState()), $logger, 'debug');
 }
-
+function logResponseInformation(Container $container, Response $response) {
+    $logger = $container->get('http_logger');
+    Utils::logArrayContent(Utils::getResponseInformation($response), $logger, 'info');
+}
 function logRequestInformation(Container $container, Request $request) {
     $logger = $container->get('http_logger');
     $request_inforamtion = Utils::getRequestInformation($request);
@@ -53,7 +56,7 @@ return function (App $app, array $entry_middleware_callables = [], array $exit_m
     $app->add(function (Request $request, Response $response, callable $next) use ($app, $middlewareHandler, $exit_middleware_callables) {
         $container = $app->getContainer();
         $response = $next($request, $response);
-        $container['response-logger']($response);
+        logResponseInformation($container, $response);
         $middlewareHandler('Exit Middlware', $exit_middleware_callables, $app, $request, $response);
         return $response;
     });

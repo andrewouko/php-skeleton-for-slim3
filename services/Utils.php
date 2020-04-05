@@ -8,6 +8,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Monolog\Logger;
 use GuzzleHttp\Psr7\Request as GuzzleRequest;
 use RuntimeException;
+use GuzzleHttp\Psr7\Response as GuzzleResponse;
 
 final class Utils{
     static function getRequestInformation(Request $request, array $additional_info = []){
@@ -128,6 +129,26 @@ final class Utils{
             ]);
         }
         
+        return (count($additional_info)) ? array_merge($response, $additional_info) : $response;
+    }
+    static function getGuzzleResponseInformation(GuzzleResponse $response, array $additional_info = []){
+        $body = $response->getBody();
+        $response = [
+            'response_processing_time' => new DateTime(null, new DateTimeZone('Africa/Nairobi')),
+            'response_status' => $response->getStatusCode(),
+            'reason_phrase' => $response->getReasonPhrase(),
+            'protocol_version' => $response->getProtocolVersion(),
+            'response_headers' => $response->getHeaders(),
+            'response_body' => [
+                'body' => (string) $body,
+                'contents' => $body->getContents(),
+                'size' => $body->getSize(),
+                'seekable' => $body->isSeekable(),
+                'writable' => $body->isWritable(),
+                'readable' => $body->isReadable(),
+                'metadata' => $body->getMetadata()
+            ]
+        ];
         return (count($additional_info)) ? array_merge($response, $additional_info) : $response;
     }
     static function isAbsolutePath(string $path){
