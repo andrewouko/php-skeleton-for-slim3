@@ -58,7 +58,8 @@ return function (App $app, array $entry_middleware_callables = [], array $exit_m
         $response = $next($request, $response);
         logResponseInformation($container, $response);
         $middlewareHandler('Exit Middlware', $exit_middleware_callables, $app, $request, $response);
-        return $response;
+        return $response
+            ->withHeader('Access-Control-Allow-Origin', '*');
     });
 
 
