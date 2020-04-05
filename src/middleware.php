@@ -59,14 +59,16 @@ return function (App $app, array $entry_middleware_callables = [], array $exit_m
         $container = $app->getContainer();
         $response = $next($request, $response);
         logResponseInformation($container, $response);
-        $middlewareHandler('Exit Middleware', $exit_middleware_callables, $app, $request, $response);
+        $res = $middlewareHandler('Exit Middleware', $exit_middleware_callables, $app, $request, $response);
+        if($res){
+            $response = $res;
+        }
         return $next($request, $response);
     });
 
 
     //cors middleware
     $app->add(function (Request $request, Response $response, callable $next) {
-        echo 'are you seeing this';
         $response = $next($request, $response);
         return $response
                 ->withHeader('Access-Control-Allow-Origin', '*')
