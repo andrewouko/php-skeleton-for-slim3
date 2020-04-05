@@ -64,9 +64,11 @@ return function (App $app) {
             $error_logger = $c['error_logger'];
             Utils::logArrayContent($error_obj->error, $error_logger, 'critical');
             return $response->withStatus(500)
-                ->withHeader('Content-Type', 'application/json')
-                ->write(Utils::formatJsonResponse('', $error_obj->error['Message']));
-                // ->write("Something went wrong!\n" . $error_obj->error['resolution']);
+            ->withHeader('Access-Control-Allow-Headers', array('Content-Type', 'X-Requested-With', 'Authorization'))
+            ->withHeader('Access-Control-Allow-Methods', array('GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'))
+            ->withHeader('Content-Type', 'application/json')
+            ->write(Utils::formatJsonResponse('', $error_obj->error['Message']));
+            // ->write("Something went wrong!\n" . $error_obj->error['resolution']);
         };
     };
 
