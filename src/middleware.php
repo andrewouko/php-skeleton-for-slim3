@@ -66,6 +66,7 @@ return function (App $app, array $entry_middleware_callables = [], array $exit_m
 
     //cors middleware
     $app->add(function (Request $request, Response $response, callable $next) {
+        echo 'are you seeing this';
         $response = $next($request, $response);
         return $response
                 ->withHeader('Access-Control-Allow-Origin', '*')
