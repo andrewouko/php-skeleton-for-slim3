@@ -51,7 +51,7 @@ return function (App $app) {
     // LOG Ps-r 7 response
     $container['response-logger'] = function($c) {
         return function ($response) use ($c) {
-            if($response instanceof Response || !$response instanceof GuzzleResponse) throw new InvalidArgumentException("Invalid Response type provided. Supported types are Response or GuzzleResponse. Provided: " . gettype($response));
+            if(!$response instanceof Response || !$response instanceof GuzzleResponse) throw new InvalidArgumentException("Invalid Response type provided. Supported types are Response or GuzzleResponse. Provided: " . gettype($response));
             $logger = $c->get('http_logger');
             Utils::logArrayContent(Utils::getResponseInformation($response), $logger, 'info');
         };
