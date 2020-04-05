@@ -51,6 +51,7 @@ return function (App $app, array $entry_middleware_callables = [], array $exit_m
         return $next($request, $response);
     });
 
+    $app->add(new Tuupola\Middleware\CorsMiddleware);
 
     // exit middleware
     $app->add(function (Request $request, Response $response, callable $next) use ($app, $middlewareHandler, $exit_middleware_callables) {
@@ -60,7 +61,5 @@ return function (App $app, array $entry_middleware_callables = [], array $exit_m
         $middlewareHandler('Exit Middleware', $exit_middleware_callables, $app, $request, $response);
         return $next($request, $response);
     });
-
-    $app->add(new Tuupola\Middleware\CorsMiddleware);
 
 };
