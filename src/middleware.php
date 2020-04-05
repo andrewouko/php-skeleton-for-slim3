@@ -70,9 +70,10 @@ return function (App $app, array $entry_middleware_callables = [], array $exit_m
     //cors middleware
     $app->add(function (Request $request, Response $response, callable $next) {
         $response = $next($request, $response);
-        return $response
-                ->withHeader('Access-Control-Allow-Origin', '*')
-                ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
-                ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+        return $response;
+        // return $response
+        //         ->withHeader('Access-Control-Allow-Origin', '*')
+        //         ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
+        //         ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
     });
 };
