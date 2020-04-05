@@ -133,13 +133,14 @@ final class Utils{
     }
     static function getGuzzleResponseInformation(GuzzleResponse $response, array $additional_info = []){
         $body = $response->getBody();
+        $client_prefix = "Guzzle_http_";
         $response = [
-            'response_processing_time' => new DateTime(null, new DateTimeZone('Africa/Nairobi')),
-            'response_status' => $response->getStatusCode(),
-            'reason_phrase' => $response->getReasonPhrase(),
-            'protocol_version' => $response->getProtocolVersion(),
-            'response_headers' => $response->getHeaders(),
-            'response_body' => [
+            $client_prefix.'response_processing_time' => new DateTime(null, new DateTimeZone('Africa/Nairobi')),
+            $client_prefix.'response_status' => $response->getStatusCode(),
+            $client_prefix.'reason_phrase' => $response->getReasonPhrase(),
+            $client_prefix.'protocol_version' => $response->getProtocolVersion(),
+            $client_prefix.'response_headers' => $response->getHeaders(),
+            $client_prefix.'response_body' => [
                 'body' => (string) $body,
                 'contents' => $body->getContents(),
                 'size' => $body->getSize(),
