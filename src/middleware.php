@@ -38,8 +38,6 @@ $middlewareHandler = function(string $name, array $middleware_callables, App $ap
     return;
 };
 return function (App $app, array $entry_middleware_callables = [], array $exit_middleware_callables = []) use ($middlewareHandler) {
-    
-    $app->add(new Tuupola\Middleware\CorsMiddleware);
 
     // entry middleware
     $app->add(function (Request $request, Response $response, callable $next) use ($app, $entry_middleware_callables, $middlewareHandler) {
@@ -60,8 +58,9 @@ return function (App $app, array $entry_middleware_callables = [], array $exit_m
         $response = $next($request, $response);
         logResponseInformation($container, $response);
         $middlewareHandler('Exit Middleware', $exit_middleware_callables, $app, $request, $response);
-        return $response;
+        return $next($request, $response);
     });
 
+    $app->add(new Tuupola\Middleware\CorsMiddleware);
 
 };
