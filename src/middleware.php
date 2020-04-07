@@ -31,7 +31,7 @@ $middlewareHandler = function(string $name, array $middleware_callables, App $ap
         $container = $app->getContainer();
         $error_logger = $container['error_logger'];
         Utils::logArrayContent($error_obj->error, $error_logger, 'error');
-        return $response->withStatus(500)
+        return $response->withStatus(400)
         ->withHeader('Content-Type', 'application/json')
         ->write(Utils::formatJsonResponse('', $error_obj->error['Message']));
     }
