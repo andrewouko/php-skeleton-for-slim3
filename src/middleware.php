@@ -19,6 +19,10 @@ function logRequestInformation(Container $container, Request $request) {
     $request_inforamtion = Utils::getRequestInformation($request);
     Utils::logArrayContent($request_inforamtion, $logger, 'debug');
 }
+function corsResponseHandler(Request $request, Response $response, callable $next){
+    $response = $next($request, $response);
+    return $response;
+}
 $middlewareHandler = function(string $name, array $middleware_callables, App $app, Request $request, Response $response){
     try{
         foreach($middleware_callables as $callable){
@@ -47,7 +51,7 @@ return function (App $app, array $entry_middleware_callables = [], array $exit_m
         logRequestInformation($container, $request);
         $res = $middlewareHandler('Entry Middleware', $entry_middleware_callables, $app, $request, $response);
         if($res){
-            return $res;
+            return corsResponseHandler($request, $response, $next);
         }
         return $next($request, $response);
     });
@@ -61,17 +65,6 @@ return function (App $app, array $entry_middleware_callables = [], array $exit_m
         if($res){
             $response = $res;
         }
-        return $response;
-    });
-
-
-    //cors middleware
-    $app->add(function (Request $request, Response $response, callable $next) {
-        $response = $next($request, $response);
-        return $response;
-        // return $response
-        //         ->withHeader('Access-Control-Allow-Origin', '*')
-        //         ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
-        //         ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+        return corsResponseHandler($request, $response, $next);
     });
 };
