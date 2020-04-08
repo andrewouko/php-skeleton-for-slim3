@@ -19,15 +19,15 @@ function logRequestInformation(Container $container, Request $request) {
     $request_inforamtion = Utils::getRequestInformation($request);
     Utils::logArrayContent($request_inforamtion, $logger, 'debug');
 }
-function withCORS(Response $response){
-    header_remove('Access-Control-Allow-Origin');
-    header_remove('Access-Control-Allow-Headers');
-    header_remove('Access-Control-Allow-Methods');
-    return $response
-        ->withHeader('Content-Type', 'application/json')
-        ->withHeader('Access-Control-Allow-Origin', '*')
-        ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
-        ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+function withAdditionalHeaders(Response $response, array $additional_headers){
+    foreach($additional_headers as $header){
+        $header = explode(':', $header);
+        $header_key = $header[0];
+        $header_content = $header[1];
+        header_remove($header_key);
+        $response = $response->withHeader($header_key, $header_content);
+    }
+    return $response;
 }
 $middlewareHandler = function(string $name, array $middleware_callables, App $app, Request $request, Response $response){
     try{
@@ -56,7 +56,12 @@ return function (App $app, array $entry_middleware_callables = [], array $exit_m
         logRequestInformation($container, $request);
         $res = $middlewareHandler('Entry Middleware', $entry_middleware_callables, $app, $request, $response);
         if($res){
-            return withCORS($response);
+            return withAdditionalHeaders($response, [
+                'Content-Type:application/json', 
+                'Access-Control-Allow-Origin:*', 
+                'Access-Control-Allow-Headers:X-Requested-With, Content-Type, Accept, Origin, Authorization',
+                'Access-Control-Allow-Methods:GET, POST, PUT, DELETE, PATCH, OPTIONS'
+            ]);
         }
         return $next($request, $response);
     });
