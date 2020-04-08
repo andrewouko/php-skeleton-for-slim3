@@ -20,6 +20,9 @@ function logRequestInformation(Container $container, Request $request) {
     Utils::logArrayContent($request_inforamtion, $logger, 'debug');
 }
 function corsResponseHandler(Response $response){
+    header_remove('Access-Control-Allow-Origin');
+    header_remove('Access-Control-Allow-Headers');
+    header_remove('Access-Control-Allow-Methods');
     return $response
             ->withHeader('Access-Control-Allow-Origin', '*')
             ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
