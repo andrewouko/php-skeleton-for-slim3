@@ -47,7 +47,7 @@ return function (App $app, array $entry_middleware_callables = [], array $exit_m
         logRequestInformation($container, $request);
         $res = $middlewareHandler('Entry Middleware', $entry_middleware_callables, $app, $request, $response);
         if($res){
-            return $next($request, $res);
+            return $res;
         }
         return $next($request, $response);
     });
