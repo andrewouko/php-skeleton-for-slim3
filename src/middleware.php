@@ -19,14 +19,15 @@ function logRequestInformation(Container $container, Request $request) {
     $request_inforamtion = Utils::getRequestInformation($request);
     Utils::logArrayContent($request_inforamtion, $logger, 'debug');
 }
-function corsResponseHandler(Response $response){
+function withCORS(Response $response){
     header_remove('Access-Control-Allow-Origin');
     header_remove('Access-Control-Allow-Headers');
     header_remove('Access-Control-Allow-Methods');
     return $response
-            ->withHeader('Access-Control-Allow-Origin', '*')
-            ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
-            ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+        ->withHeader('Content-Type', 'application/json')
+        ->withHeader('Access-Control-Allow-Origin', '*')
+        ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
+        ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
 }
 $middlewareHandler = function(string $name, array $middleware_callables, App $app, Request $request, Response $response){
     try{
@@ -41,7 +42,6 @@ $middlewareHandler = function(string $name, array $middleware_callables, App $ap
         $error_logger = $container['error_logger'];
         Utils::logArrayContent($error_obj->error, $error_logger, 'error');
         return $response->withStatus(400)
-        ->withHeader('Content-Type', 'application/json')
         ->write(Utils::formatJsonResponse('', $error_obj->error['Message']));
     }
     return;
@@ -56,7 +56,7 @@ return function (App $app, array $entry_middleware_callables = [], array $exit_m
         logRequestInformation($container, $request);
         $res = $middlewareHandler('Entry Middleware', $entry_middleware_callables, $app, $request, $response);
         if($res){
-            return corsResponseHandler($response);
+            return withCORS($response);
         }
         return $next($request, $response);
     });

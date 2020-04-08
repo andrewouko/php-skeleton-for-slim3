@@ -57,7 +57,7 @@ return function (App $app) {
         };
     };
 
-    // DEFAULT ERROR LOGGING STRATEGY
+    // DEFAULT ERROR HANDLING STRATEGY
     $container['errorHandling'] = function($c) {
         return function(Request $request, Exception $exception) use ($c) {
             $error_obj = new Error($request, $exception, 'Default Error Handler : Caught Error');
