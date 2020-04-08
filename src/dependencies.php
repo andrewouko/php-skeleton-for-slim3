@@ -7,6 +7,8 @@ use Slim\App;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request as GuzzleRequest;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
+use Slim\Http\Request;
+use Slim\Http\Response;
 
 return function (App $app) {
     $container = $app->getContainer();
@@ -55,17 +57,24 @@ return function (App $app) {
         };
     };
 
-    // DEFAULT ERROR HANDLING SERVICE
-    $container['errorHandler'] = function($c) {
-        return function (Slim\Http\Request $request, Slim\Http\Response $response, Exception $exception) use ($c) {
-            // var_dump($response);
+    // DEFAULT ERROR LOGGING STRATEGY
+    $container['errorHandling'] = function($c) {
+        return function(Request $request, Exception $exception) use ($c) {
             $error_obj = new Error($request, $exception, 'Default Error Handler : Caught Error');
             // var_dump($error_obj->error);
             $error_logger = $c['error_logger'];
             Utils::logArrayContent($error_obj->error, $error_logger, 'critical');
+            return $error_obj->error['Message'];
+        };
+    };
+
+    // DEFAULT ERROR HANDLING SERVICE
+    $container['errorHandler'] = function($c) {
+        return function (Request $request, Response $response, Exception $exception) use ($c) {
+            $error_message = $c['errorHandling']($request, $exception);
             return $response->withStatus(500)
                 ->withHeader('Content-Type', 'application/json')
-                ->write(Utils::formatJsonResponse('', $error_obj->error['Message']));
+                ->write(Utils::formatJsonResponse('', $error_message));
                 // ->write("Something went wrong!\n" . $error_obj->error['resolution']);
         };
     };
