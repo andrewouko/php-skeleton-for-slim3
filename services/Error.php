@@ -27,7 +27,7 @@ class Error {
             'request_information' => Utils::getRequestInformation($request)
         ];
         if(method_exists($e, 'getResponse')){
-            $formatted_error['guzzle_http_response_body'] = (string) $e->getResponse()->getBody();
+            $formatted_error['guzzle_http_response_body'] = $e->getResponse() ? (string) $e->getResponse()->getBody() : null;
         }
         // var_dump($formatted_error);
         return $formatted_error;
