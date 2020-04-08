@@ -19,9 +19,11 @@ function logRequestInformation(Container $container, Request $request) {
     $request_inforamtion = Utils::getRequestInformation($request);
     Utils::logArrayContent($request_inforamtion, $logger, 'debug');
 }
-function corsResponseHandler(Request $request, Response $response, callable $next){
-    $response = $next($request, $response);
-    return $response;
+function corsResponseHandler(Response $response){
+    return $response
+            ->withHeader('Access-Control-Allow-Origin', '*')
+            ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
+            ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
 }
 $middlewareHandler = function(string $name, array $middleware_callables, App $app, Request $request, Response $response){
     try{
@@ -51,7 +53,7 @@ return function (App $app, array $entry_middleware_callables = [], array $exit_m
         logRequestInformation($container, $request);
         $res = $middlewareHandler('Entry Middleware', $entry_middleware_callables, $app, $request, $response);
         if($res){
-            return corsResponseHandler($request, $response, $next);
+            return corsResponseHandler($response);
         }
         return $next($request, $response);
     });
@@ -65,6 +67,6 @@ return function (App $app, array $entry_middleware_callables = [], array $exit_m
         if($res){
             $response = $res;
         }
-        return corsResponseHandler($request, $response, $next);
+        return $response;
     });
 };
