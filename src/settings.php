@@ -16,7 +16,7 @@ return [
         ],
 
         'log' => [
-            'handler' => new StreamHandler('/var/www/html/personal_repos/php-skeleton-for-slim3/logs/' . $current_time->format('Y-m-d').'.log')
+            'handler' => new StreamHandler($_ENV['DEFAULT_LOGS_PATH'] . $current_time->format('Y-m-d').'.log')
         ],
     ],
 ];
