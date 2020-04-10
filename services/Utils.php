@@ -262,7 +262,6 @@ final class Utils{
                 $info = $stringed_info;
             }
             $log_content =  $title . ": " . $info;
-            if(is_array($log_content)){var_dump($info); die();}
             $logger->$log_level($log_content);
         }
     }
