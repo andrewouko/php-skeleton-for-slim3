@@ -280,32 +280,5 @@ final class Utils{
             return json_encode(['error' => $error], JSON_UNESCAPED_SLASHES);
         }
     }
-    static function getHTTPClientInformation(){
-        require_once 'helpers/GetClientData.php';
-        $data = new GetClientData();
-        $info = [];
-        $info[] = $data->ip();
-        $info[] = $data->os();
-        $info[] = $data->browser();
-        $info[] = $data->height();
-        $info[] = $data->width();
-        $info[] = $data->javaenabled();
-        $info[] = $data->cookieenabled();
-        $info[] = $data->language();
-        $info[] = $data->architecture();
-        $info[] = $data->device('v1');
-        $info[] = $data->geo('country');
-        $info[] = $data->geo('region');
-        $info[] = $data->geo('continent');
-        $info[] = $data->geo('city');
-        $info[] = $data->geo('logitude');
-        $info[] = $data->geo('latitude');
-        $info[] = $data->geo('currency');
-        $info[] = $data->provetor();
-        $info[] = $data->agent();
-        $info[] = $data->referer();
-        $info[] = $data->getdate();
-        return $info;
-    }
 }
 ?>
