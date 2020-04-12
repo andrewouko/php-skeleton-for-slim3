@@ -19,10 +19,6 @@ function logRequestInformation(Container $container, Request $request) {
     $request_inforamtion = Utils::getRequestInformation($request);
     Utils::logArrayContent($request_inforamtion, $logger, 'debug');
 }
-function logClientInformation(Container $container){
-    $logger = $container->get('http_logger');
-    Utils::logArrayContent(Utils::getHTTPClientInformation(), $logger, 'debug');
-}
 function withAdditionalHeaders(Response $response, array $additional_headers){
     foreach($additional_headers as $header){
         $header = explode(':', $header);
@@ -58,7 +54,6 @@ return function (App $app, array $entry_middleware_callables = [], array $exit_m
         $container = $app->getContainer();
         logServerState($container);
         logRequestInformation($container, $request);
-        logClientInformation($container);
         $res = $middlewareHandler('Entry Middleware', $entry_middleware_callables, $app, $request, $response);
         if($res){
             return withAdditionalHeaders($response, [
