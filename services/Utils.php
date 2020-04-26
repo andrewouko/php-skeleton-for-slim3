@@ -2,7 +2,6 @@
 namespace Services;
 use DateTime;
 use DateTimeZone;
-use GetClientData;
 use InvalidArgumentException;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -10,6 +9,7 @@ use Monolog\Logger;
 use GuzzleHttp\Psr7\Request as GuzzleRequest;
 use RuntimeException;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
+use Slim\Http\Response as SlimResponse;
 
 final class Utils{
     static function getRequestInformation(Request $request, array $additional_info = []){
@@ -279,6 +279,12 @@ final class Utils{
         if($error){
             return json_encode(['error' => $error], JSON_UNESCAPED_SLASHES);
         }
+    }
+    static function getRedirectResponse(string $url, string $message, SlimResponse $response, string $key = 'message'){
+        if (filter_var($url, FILTER_VALIDATE_URL) === false) throw new InvalidArgumentException("The url provided for redirect is invalid. URL provided: " . $url);
+        $message = urlencode($message);
+        // header('Location: '. $url . '?' . $key . '=' . $message);
+        return $response->withRedirect($url . '?' . $key . '=' . $message);
     }
 }
 ?>

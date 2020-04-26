@@ -96,4 +96,15 @@ return function (App $app) {
         };
     };
 
+
+    // PusherJS
+    $container['pusherjs_trigger'] = function($c){
+        return function(string $event_name, int $status, string $message, string $pusher_channel_name) {
+            foreach(['APP_KEY', 'APP_SECRET', 'APP_ID', 'APP_CLUSTER'] as $env_var){
+                if(!isset($_ENV[$env_var])) throw new RuntimeException("The " . $env_var . " environment variable is not set. It is required to init the PusherJS server.");
+            }
+            $pusher = new Pusher\Pusher($_ENV['APP_KEY'], $_ENV['APP_SECRET'], $_ENV['APP_ID'], array('cluster' => $_ENV['APP_CLUSTER']));
+            $pusher->trigger($pusher_channel_name, $_SERVER['REMOTE_ADDR'] . '|' . $event_name, array('message' => json_encode(['status' => $status, 'message' => $message])));
+        };
+    };
 };
