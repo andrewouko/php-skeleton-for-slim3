@@ -3,7 +3,6 @@ namespace Provider;
 use stdClass;
 use GuzzleHttp\Psr7\Request;
 use Provider\ProviderInterface;
-
 abstract class Provider implements ProviderInterface {
     protected $credentials;
     function __construct(string $environment){
