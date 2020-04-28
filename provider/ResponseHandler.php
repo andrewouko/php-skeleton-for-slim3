@@ -67,12 +67,12 @@ class ResponseHandler {
             $string_response = (string) $response->getBody();
 
             //handler for json responses
-            $json_decoded_response = json_decode((string) $response->getBody(), true);
+            $json_decoded_response = json_decode($string_response, true);
             if($json_decoded_response) return $json_decoded_response;
 
             //handler for xml responses
             try{
-                $xml_decoded_response = json_decode(json_encode(simplexml_load_string($response, "SimpleXMLElement", LIBXML_NOCDATA)) , true);
+                $xml_decoded_response = json_decode(json_encode(simplexml_load_string($string_response, "SimpleXMLElement", LIBXML_NOCDATA)) , true);
                 return $xml_decoded_response;
             } catch(Exception $e){
                 echo $e->getMessage();
