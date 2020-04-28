@@ -75,7 +75,6 @@ class ResponseHandler {
                 $xml_decoded_response = json_decode(json_encode(simplexml_load_string($string_response, "SimpleXMLElement", LIBXML_NOCDATA)) , true);
                 return $xml_decoded_response;
             } catch(Exception $e){
-                echo $e->getMessage();
             }
 
             //fallback to string
