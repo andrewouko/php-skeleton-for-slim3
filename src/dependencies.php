@@ -107,4 +107,18 @@ return function (App $app) {
             $pusher->trigger($pusher_channel_name, $_SERVER['REMOTE_ADDR'] . '|' . $event_name, array('message' => json_encode(['status' => $status, 'message' => $message])));
         };
     };
+
+
+    $container['withAdditionalHeaders'] = function($c){
+        return function(Response $response, array $additional_headers){
+            foreach($additional_headers as $header){
+                $header = explode(':', $header);
+                $header_key = $header[0];
+                $header_content = $header[1];
+                header_remove($header_key);
+                $response = $response->withHeader($header_key, $header_content);
+            }
+            return $response;
+        };
+    };
 };
