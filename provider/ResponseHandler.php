@@ -1,5 +1,7 @@
 <?php
 namespace Provider;
+
+use Exception;
 use Slim\Http\Request;
 use InvalidArgumentException;
 use stdClass;
@@ -62,9 +64,22 @@ class ResponseHandler {
 
         //response decoding
         if(isset($this->response_handling->decode_response) && $this->response_handling->decode_response == true){
-            $json_decoded_response = json_decode((string) $response->getBody(), true);
             $string_response = (string) $response->getBody();
-            if($json_decoded_response) return $json_decoded_response; else return $string_response;
+
+            //handler for json responses
+            $json_decoded_response = json_decode((string) $response->getBody(), true);
+            if($json_decoded_response) return $json_decoded_response;
+
+            //handler for xml responses
+            try{
+                $xml_decoded_response = json_decode(json_encode(simplexml_load_string($response, "SimpleXMLElement", LIBXML_NOCDATA)) , true);
+                return $xml_decoded_response;
+            } catch(Exception $e){
+                echo $e->getMessage();
+            }
+
+            //fallback to string
+            return $string_response;
         }
 
         //additional information from the provider class
