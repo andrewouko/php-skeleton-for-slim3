@@ -9,6 +9,7 @@ use Provider\Provider;
 use RuntimeException;
 use Slim\Container;
 use Services\Utils;
+use SimpleXMLElement;
 
 class ResponseHandler {
     private $request_input, $response_handling, $provider, $slim_request;
@@ -72,9 +73,13 @@ class ResponseHandler {
 
             //handler for xml responses
             try{
-                $xml_decoded_response = json_decode(json_encode(simplexml_load_string($string_response, "SimpleXMLElement", LIBXML_NOCDATA)) , true);
-                return $xml_decoded_response;
+                $xml_response = preg_replace("/(<\/?)(\w+):([^>]*>)/", "$1$2$3", $string_response);
+                $xml = new SimpleXMLElement($xml_response);
+                $body = $xml->xpath('//SBody')[0];
+                $array = json_decode(json_encode((array)$body), TRUE);
+                return $array;
             } catch(Exception $e){
+                echo $e->getMessage();
             }
 
             //fallback to string
