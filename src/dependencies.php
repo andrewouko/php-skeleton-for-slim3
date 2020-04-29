@@ -107,14 +107,16 @@ return function (App $app) {
     };
 
     // Service factory for the ORM
-    $container['db'] = function () use ($settings) {
-        $capsule = new \Illuminate\Database\Capsule\Manager;
-        if($settings['db']){
-            $capsule->addConnection($settings['db']);
-            $capsule->setAsGlobal();
-            $capsule->bootEloquent();
-            return $capsule;
-        }
-        throw new Exception("The db settings have not been found in the container");
+    $container['db'] = function ($c) use ($settings) {
+        return function(array $connection_settings) use ($settings) {
+            $capsule = new \Illuminate\Database\Capsule\Manager;
+            if($settings['db']){
+                $capsule->addConnection($connection_settings);
+                $capsule->setAsGlobal();
+                $capsule->bootEloquent();
+                return $capsule;
+            }
+            throw new Exception("The db settings have not been found in the container");
+        };
     };
 };
