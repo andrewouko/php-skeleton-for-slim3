@@ -107,10 +107,10 @@ return function (App $app) {
     };
 
     // Service factory for the ORM
-    $container['db'] = function ($container) {
+    $container['db'] = function () use ($settings) {
         $capsule = new \Illuminate\Database\Capsule\Manager;
-        if($container['settings']['db']){
-            $capsule->addConnection($container['settings']['db']);
+        if($settings['db']){
+            $capsule->addConnection($settings['db']);
             $capsule->setAsGlobal();
             $capsule->bootEloquent();
             return $capsule;
