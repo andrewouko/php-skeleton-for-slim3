@@ -10,6 +10,7 @@ use GuzzleHttp\Psr7\Request as GuzzleRequest;
 use RuntimeException;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
 use Slim\Http\Response as SlimResponse;
+use stdClass;
 
 final class Utils{
     static function getRequestInformation(Request $request, array $additional_info = []){
@@ -285,6 +286,20 @@ final class Utils{
         $message = urlencode($message);
         // header('Location: '. $url . '?' . $key . '=' . $message);
         return $response->withRedirect($url . '?' . $key . '=' . $message);
+    }
+    static function generateHash($input, string $hash_key, string $algo, bool $useBuildQuery = true){
+        $datastring = '';
+        if($input instanceof stdClass){
+            $input = json_decode(json_encode($input), true);
+            ksort($input);
+            if($useBuildQuery)
+                $datastring = http_build_query($input);
+            else
+                $datastring = implode('', $input);
+        } else if(is_string($input)){
+            $datastring = $input;
+        } else throw new InvalidArgumentException("The input must be either of stdClass or string. Provided: " . gettype($input));
+        return hash_hmac($algo, $datastring , $hash_key);
     }
 }
 ?>
