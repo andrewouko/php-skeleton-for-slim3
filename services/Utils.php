@@ -291,6 +291,7 @@ final class Utils{
         $datastring = '';
         if($input instanceof stdClass){
             $input = json_decode(json_encode($input), true);
+            unset($input['hash']);
             ksort($input);
             if($useBuildQuery)
                 $datastring = http_build_query($input);
