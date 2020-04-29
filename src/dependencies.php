@@ -114,7 +114,6 @@ return function (App $app) {
             $capsule->setAsGlobal();
             $capsule->bootEloquent();
             return $capsule;
-            throw new Exception("The db settings have not been found in the container");
         };
     };
 };
