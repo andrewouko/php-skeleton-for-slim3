@@ -84,7 +84,6 @@ return function (App $app) {
         return new Client();
     };
 
-
     // Handler for requests to external providers
     $container['external_request_handler'] = function($c) {
         return function(GuzzleRequest $request) use ($c) : GuzzleResponse {
@@ -96,7 +95,6 @@ return function (App $app) {
         };
     };
 
-
     // PusherJS
     $container['pusherjs_trigger'] = function($c){
         return function(string $event_name, int $status, string $message, string $pusher_channel_name) {
@@ -106,5 +104,17 @@ return function (App $app) {
             $pusher = new Pusher\Pusher($_ENV['APP_KEY'], $_ENV['APP_SECRET'], $_ENV['APP_ID'], array('cluster' => $_ENV['APP_CLUSTER']));
             $pusher->trigger($pusher_channel_name, $_SERVER['REMOTE_ADDR'] . '|' . $event_name, array('message' => json_encode(['status' => $status, 'message' => $message])));
         };
+    };
+
+    // Service factory for the ORM
+    $container['db'] = function ($container) {
+        $capsule = new \Illuminate\Database\Capsule\Manager;
+        if($container['settings']['db']){
+            $capsule->addConnection($container['settings']['db']);
+            $capsule->setAsGlobal();
+            $capsule->bootEloquent();
+            return $capsule;
+        }
+        throw new Exception("The db settings have not been found in the container");
     };
 };
