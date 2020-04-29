@@ -110,12 +110,10 @@ return function (App $app) {
     $container['db'] = function ($c) use ($settings) {
         return function(array $connection_settings) use ($settings) {
             $capsule = new \Illuminate\Database\Capsule\Manager;
-            if($settings['db']){
-                $capsule->addConnection($connection_settings);
-                $capsule->setAsGlobal();
-                $capsule->bootEloquent();
-                return $capsule;
-            }
+            $capsule->addConnection($connection_settings);
+            $capsule->setAsGlobal();
+            $capsule->bootEloquent();
+            return $capsule;
             throw new Exception("The db settings have not been found in the container");
         };
     };
