@@ -84,7 +84,7 @@ return function (App $app) {
     // DEFAULT ERROR HANDLING SERVICE
     $container['errorHandler'] = function($c) {
         return function (Request $request, Response $response, Exception $exception) use ($c) {
-            $error_response = $c['errorHandling']($request, $exception);
+            $error_response = $c['errorHandling']($request, $exception, $response);
             return $error_response;
         };
     };
