@@ -59,23 +59,33 @@ return function (App $app) {
 
     // DEFAULT ERROR HANDLING STRATEGY
     $container['errorHandling'] = function($c) {
-        return function(Request $request, Exception $exception) use ($c) {
-            $error_obj = new Error($request, $exception, 'Default Error Handler : Caught Error');
-            // var_dump($error_obj->error);
+        return function(Request $request, Exception $exception, Response $response, string $error_level = 'critical', int $header_status = 500, string $error_desc = 'Default Error Handler : Caught Error') use ($c) {
+            $error_obj = new Error($request, $exception, $error_desc);
             $error_logger = $c['error_logger'];
-            Utils::logArrayContent($error_obj->error, $error_logger, 'critical');
-            return $error_obj->error['Message'];
+            Utils::logArrayContent($error_obj->error, $error_logger, $error_level);
+            $error_message = $error_obj->error['Message'];
+            $response = Utils::withAdditionalHeaders($response, [
+                'Content-Type:application/json', 
+                'Access-Control-Allow-Origin:*', 
+                'Access-Control-Allow-Headers:X-Requested-With, Content-Type, Accept, Origin, Authorization',
+                'Access-Control-Allow-Methods:GET, POST, PUT, DELETE, PATCH, OPTIONS'
+            ]);
+            $settings = $c->get('settings');
+            $document_content = null;
+            if(isset($settings['formatErrorResponse']) && is_callable($settings['formatErrorResponse'])){
+                $document_content = $settings['formatErrorResponse']($header_status, $error_message);
+            } else{
+                $document_content = Utils::formatJsonResponse('', $error_message);
+            }
+            return $response->withStatus($header_status)->write($document_content);
         };
     };
 
     // DEFAULT ERROR HANDLING SERVICE
     $container['errorHandler'] = function($c) {
         return function (Request $request, Response $response, Exception $exception) use ($c) {
-            $error_message = $c['errorHandling']($request, $exception);
-            return $response->withStatus(500)
-                ->withHeader('Content-Type', 'application/json')
-                ->write(Utils::formatJsonResponse('', $error_message));
-                // ->write("Something went wrong!\n" . $error_obj->error['resolution']);
+            $error_response = $c['errorHandling']($request, $exception);
+            return $error_response;
         };
     };
 

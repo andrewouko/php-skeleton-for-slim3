@@ -19,6 +19,7 @@ function logRequestInformation(Container $container, Request $request) {
     $request_inforamtion = Utils::getRequestInformation($request);
     Utils::logArrayContent($request_inforamtion, $logger, 'debug');
 }
+
 $middlewareHandler = function(string $name, array $middleware_callables, App $app, Request $request, Response $response){
     try{
         foreach($middleware_callables as $callable){
@@ -26,25 +27,9 @@ $middlewareHandler = function(string $name, array $middleware_callables, App $ap
             $callable($app, $request);
         }
     } catch(Exception $e){
-        $error_obj = new Error($request, $e, ucwords(strtolower($name)) . ' Error');
-        // var_dump($error_obj->error);
         $container = $app->getContainer();
-        $error_logger = $container['error_logger'];
-        $settings = $container->get('settings');
-        Utils::logArrayContent($error_obj->error, $error_logger, 'error');
-        $header_status = 400;
-        $error_message = $error_obj->error['Message'];
-        $response = Utils::withAdditionalHeaders($response, [
-            'Content-Type:application/json', 
-            'Access-Control-Allow-Origin:*', 
-            'Access-Control-Allow-Headers:X-Requested-With, Content-Type, Accept, Origin, Authorization',
-            'Access-Control-Allow-Methods:GET, POST, PUT, DELETE, PATCH, OPTIONS'
-        ]);
-        if(isset($settings['formatErrorResponse']) && is_callable($settings['formatErrorResponse'])){
-            $settings['formatErrorResponse']($header_status, $error_message);
-        } else{
-            return $response->withStatus($header_status)->write(Utils::formatJsonResponse('', $error_message));
-        }
+        $error_response = $container['errorHandling']($request, $e, $response, 'error', 400, ucwords(strtolower($name)) . ' Error');
+        return $error_response;
     }
     return;
 };
