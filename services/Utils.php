@@ -281,6 +281,20 @@ final class Utils{
             return json_encode(['error' => $error], JSON_UNESCAPED_SLASHES);
         }
     }
+    static function formatIPAYJsonResponse(int $header_status, string $data = '', string $error = ''){
+        if((empty($data) && empty($error)) || ($data && $error)) throw new InvalidArgumentException("Provide either the error or the data paramter for the json response");
+        foreach(['data', 'error'] as $var_name){
+            if(self::isJson($$var_name)){
+                $$var_name = json_decode($$var_name, true);
+            }
+        }
+        if($data){
+            return json_encode(['header_status' => $header_status, 'data' => $data], JSON_UNESCAPED_SLASHES);
+        }
+        if($error){
+            return json_encode(['header_status' => $header_status, 'error' => $error], JSON_UNESCAPED_SLASHES);
+        }
+    }
     static function getRedirectResponse(string $url, string $message, SlimResponse $response, string $key = 'message'){
         if (filter_var($url, FILTER_VALIDATE_URL) === false) throw new InvalidArgumentException("The url provided for redirect is invalid. URL provided: " . $url);
         $message = urlencode($message);
