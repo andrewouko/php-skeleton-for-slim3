@@ -30,10 +30,21 @@ $middlewareHandler = function(string $name, array $middleware_callables, App $ap
         // var_dump($error_obj->error);
         $container = $app->getContainer();
         $error_logger = $container['error_logger'];
+        $settings = $container->get('settings');
         Utils::logArrayContent($error_obj->error, $error_logger, 'error');
         $header_status = 400;
-        return $response->withStatus($header_status)
-        ->write(Utils::formatJsonResponse('', $error_obj->error['Message']));
+        $error_message = $error_obj->error['Message'];
+        $response = Utils::withAdditionalHeaders($response, [
+            'Content-Type:application/json', 
+            'Access-Control-Allow-Origin:*', 
+            'Access-Control-Allow-Headers:X-Requested-With, Content-Type, Accept, Origin, Authorization',
+            'Access-Control-Allow-Methods:GET, POST, PUT, DELETE, PATCH, OPTIONS'
+        ]);
+        if(isset($settings['formatErrorResponse']) && is_callable($settings['formatErrorResponse'])){
+            $settings['formatErrorResponse']($header_status, $error_message);
+        } else{
+            return $response->withStatus($header_status)->write(Utils::formatJsonResponse('', $error_message));
+        }
     }
     return;
 };
@@ -45,14 +56,9 @@ return function (App $app, array $entry_middleware_callables = [], array $exit_m
         $container = $app->getContainer();
         logServerState($container);
         logRequestInformation($container, $request);
-        $res = $middlewareHandler('Entry Middleware', $entry_middleware_callables, $app, $request, $response);
-        if($res){
-            return Utils::withAdditionalHeaders($response, [
-                'Content-Type:application/json', 
-                'Access-Control-Allow-Origin:*', 
-                'Access-Control-Allow-Headers:X-Requested-With, Content-Type, Accept, Origin, Authorization',
-                'Access-Control-Allow-Methods:GET, POST, PUT, DELETE, PATCH, OPTIONS'
-            ]);
+        $middleware_response = $middlewareHandler('Entry Middleware', $entry_middleware_callables, $app, $request, $response);
+        if($middleware_response){
+            return $middleware_response;
         }
         return $next($request, $response);
     });
