@@ -19,16 +19,6 @@ function logRequestInformation(Container $container, Request $request) {
     $request_inforamtion = Utils::getRequestInformation($request);
     Utils::logArrayContent($request_inforamtion, $logger, 'debug');
 }
-function withAdditionalHeaders(Response $response, array $additional_headers){
-    foreach($additional_headers as $header){
-        $header = explode(':', $header);
-        $header_key = $header[0];
-        $header_content = $header[1];
-        header_remove($header_key);
-        $response = $response->withHeader($header_key, $header_content);
-    }
-    return $response;
-}
 $middlewareHandler = function(string $name, array $middleware_callables, App $app, Request $request, Response $response){
     try{
         foreach($middleware_callables as $callable){
@@ -41,7 +31,8 @@ $middlewareHandler = function(string $name, array $middleware_callables, App $ap
         $container = $app->getContainer();
         $error_logger = $container['error_logger'];
         Utils::logArrayContent($error_obj->error, $error_logger, 'error');
-        return $response->withStatus(400)
+        $header_status = 400;
+        return $response->withStatus($header_status)
         ->write(Utils::formatJsonResponse('', $error_obj->error['Message']));
     }
     return;
@@ -56,7 +47,7 @@ return function (App $app, array $entry_middleware_callables = [], array $exit_m
         logRequestInformation($container, $request);
         $res = $middlewareHandler('Entry Middleware', $entry_middleware_callables, $app, $request, $response);
         if($res){
-            return withAdditionalHeaders($response, [
+            return Utils::withAdditionalHeaders($response, [
                 'Content-Type:application/json', 
                 'Access-Control-Allow-Origin:*', 
                 'Access-Control-Allow-Headers:X-Requested-With, Content-Type, Accept, Origin, Authorization',

@@ -302,5 +302,15 @@ final class Utils{
         } else throw new InvalidArgumentException("The input must be either of stdClass or string. Provided: " . gettype($input));
         return hash_hmac($algo, $datastring , $hash_key);
     }
+    static function withAdditionalHeaders(SlimResponse $response, array $additional_headers){
+        foreach($additional_headers as $header){
+            $header = explode(':', $header);
+            $header_key = $header[0];
+            $header_content = $header[1];
+            header_remove($header_key);
+            $response = $response->withHeader($header_key, $header_content);
+        }
+        return $response;
+    }
 }
 ?>
