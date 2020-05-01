@@ -111,8 +111,8 @@ return function (App $app) {
         return function(array $connection_settings) use ($settings) {
             $capsule = new \Illuminate\Database\Capsule\Manager;
             $capsule->addConnection($connection_settings);
-            // $capsule->setAsGlobal();
-            // $capsule->bootEloquent();
+            $capsule->setAsGlobal();
+            $capsule->bootEloquent();
             return $capsule;
         };
     };
