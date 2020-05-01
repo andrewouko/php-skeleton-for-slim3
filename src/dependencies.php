@@ -112,7 +112,7 @@ return function (App $app) {
             $capsule = new \Illuminate\Database\Capsule\Manager;
             $capsule->addConnection($connection_settings);
             // $capsule->setAsGlobal();
-            $capsule->bootEloquent();
+            // $capsule->bootEloquent();
             return $capsule;
         };
     };
