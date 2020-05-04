@@ -55,8 +55,8 @@ class ResponseHandler {
         $request = $this->provider->getRequest($this->request_input);
 
         //log the request as a curl command for debugging
-        echo (new CurlFormatter())->format($request, []);
-
+        $curl_command = (new CurlFormatter())->format($request, []);
+        Utils::logArrayContent(['curl_command' => $curl_command], $container['http_logger'], 'debug');
 
         // handle the response according the mechanisms specified
         if(isset($this->response_handling->return_request) && $this->response_handling->return_request == true)
