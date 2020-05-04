@@ -295,9 +295,9 @@ final class Utils{
             return json_encode(['header_status' => $header_status, 'error' => $error], JSON_UNESCAPED_SLASHES);
         }
     }
-    static function formatIPAYSuccessResponse(int $status, string $text, array $payload){
+    static function formatIPAYSuccessResponse(int $header_status, string $text, array $payload){
         return json_encode(array_merge([
-            'status' => $status,
+            'header_status' => $header_status,
             'text' => $text
         ], $payload));
     }
