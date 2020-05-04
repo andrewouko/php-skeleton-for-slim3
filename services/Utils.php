@@ -295,6 +295,12 @@ final class Utils{
             return json_encode(['header_status' => $header_status, 'error' => $error], JSON_UNESCAPED_SLASHES);
         }
     }
+    static function formatIPAYSuccessResponse(int $status, string $text, array $payload){
+        return json_encode(array_merge([
+            'status' => $status,
+            'text' => $text
+        ], $payload));
+    }
     static function getRedirectResponse(string $url, string $message, SlimResponse $response, string $key = 'message'){
         if (filter_var($url, FILTER_VALIDATE_URL) === false) throw new InvalidArgumentException("The url provided for redirect is invalid. URL provided: " . $url);
         $message = urlencode($message);
