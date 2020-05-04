@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "631d0a7ac82754a07ce31a456669a90e",
+    "content-hash": "94c23e2a6a89f62fe2da5b7a18900999",
     "packages": [
         {
             "name": "container-interop/container-interop",
@@ -628,6 +628,56 @@
                 "psr-3"
             ],
             "time": "2019-12-20T14:15:16+00:00"
+        },
+        {
+            "name": "namshi/cuzzle",
+            "version": "2.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/namshi/cuzzle.git",
+                "reference": "89849bb9c729a3d8aabf94c0b66e77c7df38abda"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/namshi/cuzzle/zipball/89849bb9c729a3d8aabf94c0b66e77c7df38abda",
+                "reference": "89849bb9c729a3d8aabf94c0b66e77c7df38abda",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^6.0",
+                "php": ">=5.5.0",
+                "psr/log": "^1.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.2.2"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Namshi\\Cuzzle\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nikita Nefedov",
+                    "email": "inefedor@gmail.com"
+                },
+                {
+                    "name": "cirpo",
+                    "email": "alessandro.cinelli@gmail.com"
+                }
+            ],
+            "description": "Get the cURL shell command from a Guzzle request",
+            "time": "2016-11-23T08:01:36+00:00"
         },
         {
             "name": "nesbot/carbon",

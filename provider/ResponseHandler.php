@@ -10,6 +10,7 @@ use RuntimeException;
 use Slim\Container;
 use Services\Utils;
 use SimpleXMLElement;
+use Namshi\Cuzzle\Formatter\CurlFormatter;
 
 class ResponseHandler {
     private $request_input, $response_handling, $provider, $slim_request;
@@ -52,6 +53,10 @@ class ResponseHandler {
     function getResponse(Container $container){
         // get the guzzle request for all operations in a unified manner
         $request = $this->provider->getRequest($this->request_input);
+
+        //log the request as a curl command for debugging
+        echo (new CurlFormatter())->format($request, []);
+
 
         // handle the response according the mechanisms specified
         if(isset($this->response_handling->return_request) && $this->response_handling->return_request == true)
