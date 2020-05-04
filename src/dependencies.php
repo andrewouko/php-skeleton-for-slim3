@@ -61,6 +61,9 @@ return function (App $app) {
     $container['errorHandling'] = function($c) {
         return function(Request $request, Exception $exception, Response $response, string $error_level = 'critical', int $header_status = 500, string $error_desc = 'Default Error Handler : Caught Error') use ($c) {
             $error_obj = new Error($request, $exception, $error_desc);
+            if($exception instanceof DomainException){
+                $header_status = 401;
+            }
             $error_logger = $c['error_logger'];
             Utils::logArrayContent($error_obj->error, $error_logger, $error_level);
             $error_message = $error_obj->error['Message'];
