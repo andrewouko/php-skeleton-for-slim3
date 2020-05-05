@@ -332,5 +332,13 @@ final class Utils{
         }
         return $response;
     }
+    static function withCORSHeaders(SlimResponse $response){
+        return self::withAdditionalHeaders($response, [
+            'Content-Type:application/json', 
+            'Access-Control-Allow-Origin:*', 
+            'Access-Control-Allow-Headers:Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With',
+            'Access-Control-Allow-Methods:GET, POST, PUT, DELETE, PATCH, OPTIONS'
+        ]); 
+    }
 }
 ?>

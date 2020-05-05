@@ -43,7 +43,7 @@ return function (App $app, array $entry_middleware_callables = [], array $exit_m
         logRequestInformation($container, $request);
         $middleware_response = $middlewareHandler('Entry Middleware', $entry_middleware_callables, $app, $request, $response);
         if($middleware_response){
-            return $middleware_response;
+            return Utils::withCORSHeaders($middleware_response);
         }
         return $next($request, $response);
     });
@@ -55,8 +55,8 @@ return function (App $app, array $entry_middleware_callables = [], array $exit_m
         logResponseInformation($container, $response);
         $middleware_response = $middlewareHandler('Exit Middleware', $exit_middleware_callables, $app, $request, $response);
         if($middleware_response){
-            return $middleware_response;
+            return Utils::withCORSHeaders($middleware_response);
         }
-        return $response;
+        return Utils::withCORSHeaders($response);
     });
 };
