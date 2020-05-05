@@ -67,12 +67,12 @@ return function (App $app) {
             $error_logger = $c['error_logger'];
             Utils::logArrayContent($error_obj->error, $error_logger, $error_level);
             $error_message = $error_obj->error['Message'];
-            $response = Utils::withAdditionalHeaders($response, [
-                'Content-Type:application/json', 
-                'Access-Control-Allow-Origin:*', 
-                'Access-Control-Allow-Headers:Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With',
-                'Access-Control-Allow-Methods:GET, POST, PUT, DELETE, PATCH, OPTIONS'
-            ]);
+            // $response = Utils::withAdditionalHeaders($response, [
+            //     'Content-Type:application/json', 
+            //     'Access-Control-Allow-Origin:*', 
+            //     'Access-Control-Allow-Headers:Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With',
+            //     'Access-Control-Allow-Methods:GET, POST, PUT, DELETE, PATCH, OPTIONS'
+            // ]);
             $settings = $c->get('settings');
             $document_content = null;
             if(isset($settings['formatErrorResponse']) && is_callable($settings['formatErrorResponse'])){
