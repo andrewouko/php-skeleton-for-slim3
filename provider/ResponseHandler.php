@@ -77,15 +77,11 @@ class ResponseHandler {
             if($json_decoded_response) return $json_decoded_response;
 
             //handler for xml responses
-            try{
-                $xml_response = preg_replace("/(<\/?)(\w+):([^>]*>)/", "$1$2$3", $string_response);
-                $xml = new SimpleXMLElement($xml_response);
-                $body = $xml->xpath('//SBody')[0];
-                $array = json_decode(json_encode((array)$body), TRUE);
-                return $array;
-            } catch(Exception $e){
-                echo $e->getMessage();
-            }
+            $xml_response = preg_replace("/(<\/?)(\w+):([^>]*>)/", "$1$2$3", $string_response);
+            $xml = new SimpleXMLElement($xml_response);
+            $body = $xml->xpath('//SBody')[0];
+            $array = json_decode(json_encode((array)$body), TRUE);
+            return $array;
 
             //fallback to string
             return $string_response;
