@@ -322,7 +322,7 @@ final class Utils{
         } else throw new InvalidArgumentException("The input must be either of stdClass or string. Provided: " . gettype($input));
         return hash_hmac($algo, $datastring , $hash_key);
     }
-    static function withAdditionalHeaders(SlimResponse $response, array $additional_headers){
+    static function withAdditionalHeaders(Response $response, array $additional_headers){
         foreach($additional_headers as $header){
             $header = explode(':', $header);
             $header_key = $header[0];
@@ -332,7 +332,7 @@ final class Utils{
         }
         return $response;
     }
-    static function withCORSHeaders(SlimResponse $response){
+    static function withCORSHeaders(Response $response){
         return self::withAdditionalHeaders($response, [
             'Content-Type:application/json', 
             'Access-Control-Allow-Origin:*', 
