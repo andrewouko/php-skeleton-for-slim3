@@ -74,7 +74,6 @@ return function (App $app) {
             } else{
                 $document_content = Utils::formatJsonResponse('', $error_message);
             }
-            $response = Utils::withCORSHeaders($response);
             return $response->withStatus($header_status)->write($document_content);
         };
     };
