@@ -335,7 +335,7 @@ final class Utils{
     static function withCORSHeaders(Response $response){
         return self::withAdditionalHeaders($response, [
             'Access-Control-Allow-Origin:*', 
-            'Access-Control-Allow-Headers:Content-Type, Accept, Origin',
+            'Access-Control-Allow-Headers:Content-Type, Accept, Origin, X-Requested-With',
             'Access-Control-Allow-Methods:GET, POST, PUT, DELETE, PATCH, OPTIONS'
         ]); 
     }
