@@ -56,7 +56,6 @@ return function (App $app, array $entry_middleware_callables = [], array $exit_m
         $middleware_response = $middlewareHandler('Exit Middleware', $exit_middleware_callables, $app, $request, $response);
         if($middleware_response){
             return $middleware_response;
-            
         }
         return $response;
     });
