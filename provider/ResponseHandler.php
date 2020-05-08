@@ -76,7 +76,7 @@ class ResponseHandler {
             $json_decoded_response = json_decode($string_response, true);
             if($json_decoded_response) return $json_decoded_response;
 
-            //handler for xml responses
+            //handler for xml responses if necessary
             if(preg_match("/(<\/?)(\w+):([^>]*>)/", $string_response)){
                 $xml_response = preg_replace("/(<\/?)(\w+):([^>]*>)/", "$1$2$3", $string_response);
                 $xml = new SimpleXMLElement($xml_response);
