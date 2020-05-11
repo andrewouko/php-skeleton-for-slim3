@@ -64,6 +64,9 @@ return function (App $app) {
             if($exception instanceof DomainException){
                 $header_status = 401;
             }
+            if($exception instanceof UnexpectedValueException){
+                $header_status = 400;
+            }
             $error_logger = $c['error_logger'];
             Utils::logArrayContent($error_obj->error, $error_logger, $error_level);
             $error_message = $error_obj->error['Message'];
