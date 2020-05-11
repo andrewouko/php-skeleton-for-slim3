@@ -42,18 +42,7 @@ class ResponseHandler {
     }
     private function getRequestInput($request_input){
         if(!$request_input){
-            if($this->slim_request->getMethod() == 'POST'){
-                $request_input = $this->slim_request->getParsedBody();
-            } else {
-                $request_input = $this->slim_request->getQueryParams();   
-            }
-            $files = $this->slim_request->getUploadedFiles();
-            if($files){
-                foreach($files as $field_name => $file){
-                    $request_input[$field_name] = $file;
-                }
-            }
-            $request_input = (object) $request_input;
+            $request_input = Utils::getRequestInput($this->slim_request);
         }
         return $request_input;
     }

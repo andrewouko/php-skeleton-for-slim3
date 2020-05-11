@@ -343,5 +343,21 @@ final class Utils{
             'Access-Control-Allow-Methods:GET, POST, PUT, DELETE, PATCH, OPTIONS'
         ]); 
     }
+    static function getRequestInput(Request $request){
+        $request_input = [];
+        if($request->getMethod() == 'POST'){
+            $request_input = $request->getParsedBody();
+        } else {
+            $request_input = $request->getQueryParams();   
+        }
+        $files = $request->getUploadedFiles();
+        if($files){
+            foreach($files as $field_name => $file){
+                $request_input[$field_name] = $file;
+            }
+        }
+        $request_input = (object) $request_input;
+        return $request_input;
+    }
 }
 ?>
