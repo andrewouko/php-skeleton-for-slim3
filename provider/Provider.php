@@ -16,6 +16,24 @@ abstract class Provider implements ProviderInterface {
             $this->credentials = (object) parse_ini_file($credentials_dir, true, INI_SCANNER_RAW);
         } else throw new \InvalidArgumentException("The credentials path provided is invalid. Path provided: " . $credentials_dir);
     }
+    protected function createMultipartStream(array $stream){
+        // $stream = [
+        //     [
+        //         'name' => 'file',
+        //         'contents' => fopen($input->file->file, 'r')
+        //     ],
+        //     [
+        //         'name' => 'id_number',
+        //         'contents' => $input->id_number
+        //     ],
+        //     [
+        //         'name' => 'channel',
+        //         'contents' => $this->credentials->client_name
+        //     ]
+        // ];
+        // $multipart = new MultipartStream($stream);
+        return new MultipartStream($stream);
+    }
     protected function getGuzzleRequest(string $method, string $url, array $headers, string $request_data):Request{
         $request_headers = [];
         foreach($headers as $header){
