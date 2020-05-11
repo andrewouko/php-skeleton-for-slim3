@@ -53,13 +53,15 @@ final class Utils{
             ]
         ];
         if($files){
-            array_merge($response, [
-                'files' => [
-                    'size' => $files->getSize(),
-                    'name' => $files->getClientFilename(),
-                    'mimeType' => $files->getClientMediaType()
-                ]
-            ]);
+            foreach($files as $key => $file){
+                array_merge($response, [
+                    'files_' . $key => [
+                        'size' => $file->getSize(),
+                        'name' => $file->getClientFilename(),
+                        'mimeType' => $file->getClientMediaType()
+                    ]
+                ]);
+            }
         }
         if ($request->getHeaderLine('X-Requested-With') === 'XMLHttpRequest') {
             array_merge($response, [
