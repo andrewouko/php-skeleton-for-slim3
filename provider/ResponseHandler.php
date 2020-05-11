@@ -14,10 +14,12 @@ use Namshi\Cuzzle\Formatter\CurlFormatter;
 
 class ResponseHandler {
     private $request_input, $response_handling, $provider, $slim_request;
-    function __construct(callable $initProvider, Request $request, stdClass $response_handling = null, stdClass $request_input = null){
+    function __construct(callable $initProvider, Request $request = null, stdClass $response_handling = null, stdClass $request_input = null){
         $this->provider = $initProvider();
         if(!$this->provider instanceof Provider) throw new RuntimeException("The instance returned by the initProvider callable must be an instance of the Provider class");
-        $this->slim_request = $request;
+        $this->slim_request = null;
+        if($request)
+            $this->slim_request = $request;
         $this->request_input = $this->getRequestInput($request_input);
         $this->response_handling = $response_handling;
         $this->validateResponseHandling();
@@ -41,7 +43,7 @@ class ResponseHandler {
         }
     }
     private function getRequestInput($request_input){
-        if(!$request_input){
+        if(!$request_input && $this->slim_request){
             if($this->slim_request->getMethod() == 'POST'){
                 $request_input = (object) $this->slim_request->getParsedBody();
             } else {
