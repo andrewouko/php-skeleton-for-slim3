@@ -58,7 +58,8 @@ final class Utils{
                     'files_' . $key => [
                         'size' => $file->getSize(),
                         'name' => $file->getClientFilename(),
-                        'mimeType' => $file->getClientMediaType()
+                        'mimeType' => $file->getClientMediaType(),
+                        'error' => $file->getError()
                     ]
                 ]);
             }
@@ -76,7 +77,8 @@ final class Utils{
             '$_REQUEST' => $_REQUEST,
             '$_GET' => $_GET,
             '$_POST' => $_POST,
-            'php:\/\/input' => file_get_contents("php://input")
+            'php:\/\/input' => file_get_contents("php://input"),
+            '$_FILES' => $_FILES
 
         ];
         return (count($additional_info)) ? array_merge($response, $additional_info) : $response;   
