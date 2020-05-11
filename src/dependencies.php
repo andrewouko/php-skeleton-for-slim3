@@ -76,6 +76,7 @@ return function (App $app) {
                 $document_content = $settings['formatErrorResponse']($header_status, $error_message);
             } else{
                 $document_content = Utils::formatJsonResponse('', $error_message);
+                $response = $response->withHeader('Content-Type', 'application/json');
             }
             return $response->withStatus($header_status)->write($document_content);
         };
