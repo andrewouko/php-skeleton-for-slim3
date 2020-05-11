@@ -262,8 +262,18 @@ final class Utils{
                 if(!$stringed_info){
                     // ob_flush();
                     // ob_start();
-                    // var_dump($info);
-                    throw new RuntimeException("Unable to convert data to a string. " . gettype($info) . " type found.");
+                    // var_dump($info)
+                    if(is_array($info)){
+                        $stringed_info = '';
+                        foreach($info as $k => $v){
+                            if(is_string($k) && (is_string($v) || is_string(json_encode($v)))){
+                                if(!is_string($v)) $v = json_encode($v);
+                                $stringed_info .= $k . ": " . $v . "\n";
+                            }
+                        }
+                    }
+                    if(!$stringed_info || empty($stringed_info))
+                        throw new RuntimeException("Unable to convert data to a string. " . gettype($info) . " type found.");
                 }
                 $info = $stringed_info;
             }
