@@ -16,8 +16,7 @@ abstract class Provider implements ProviderInterface {
             $this->credentials = (object) parse_ini_file($credentials_dir, true, INI_SCANNER_RAW);
         } else throw new \InvalidArgumentException("The credentials path provided is invalid. Path provided: " . $credentials_dir);
     }
-    protected function getGuzzleRequest(string $method, string $url, array $headers, $request_data):Request{
-        if(!is_string($request_data) || !$request_data instanceof MultipartStream) throw new InvalidArgumentException("The argument passed to the request_data parameter must be of the type string or " . MultipartStream::class . ". Provided: " . gettype($request_data));
+    protected function getGuzzleRequest(string $method, string $url, array $headers, string $request_data):Request{
         $request_headers = [];
         foreach($headers as $header){
             $h = explode(':', $header);
