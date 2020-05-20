@@ -35,7 +35,7 @@ class ResponseHandler {
                         if(!is_array($this->response_handling->$param)) throw new InvalidArgumentException($param . " must be an array. Provided: " . gettype($this->response_handling->$param));
                         break;
                     default:
-                        continue;
+                    break;
                 }
             }
         }
