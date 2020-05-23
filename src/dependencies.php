@@ -9,6 +9,7 @@ use GuzzleHttp\Psr7\Request as GuzzleRequest;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Psr\Http\Message\ResponseInterface;
 
 return function (App $app) {
     $container = $app->getContainer();
@@ -49,11 +50,11 @@ return function (App $app) {
         return new HTTP_Validation();
     };
 
-    // LOG Ps-r 7 response
+    // Log Psr-7 response
     $container['response-logger'] = function($c) {
-        return function (GuzzleResponse $response) use ($c) {
+        return function (ResponseInterface $response) use ($c) {
             $logger = $c->get('http_logger');
-            Utils::logArrayContent(Utils::getGuzzleResponseInformation($response), $logger, 'info');
+            Utils::logArrayContent(Utils::getResponseInformation($response), $logger, 'info');
         };
     };
 
