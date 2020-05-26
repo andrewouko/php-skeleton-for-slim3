@@ -69,7 +69,7 @@ class HTTP_Validation {
         }
 
         // VALIDATE VALID VALUES
-        if((count($valid_values) < 0 && strlen($val)) || (count($valid_values) && in_array($val, $valid_values))){}else{
+        if((count($valid_values) < 1 && strlen($val)) || (count($valid_values) && in_array($val, $valid_values))){}else{
             throw new \InvalidArgumentException("Valid values for ". $name . " are: " . json_encode($valid_values));
         }
         return true;
