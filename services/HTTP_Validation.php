@@ -113,13 +113,13 @@ class HTTP_Validation {
                     if($type) $metadata['type'] = $type;
                     break;
                 case 'length':
-                    if($length){
+                    if(isset($length)){
                         if(!is_int($length)) throw new \InvalidArgumentException("The argument supplied to the 2nd parameter (length) must be an int. Provided: " . gettype($length));
                         if($length) $metadata['length'] = $length;
                     }
                     break;
                 case 'valid_values':
-                    if($valid_values){
+                    if(isset($valid_values)){
                         if(!is_array($valid_values) && count($valid_values)) throw new \InvalidArgumentException("The argument supplied to the 3rd parameter (valid_values) must be an array and is not empty. Provided: " . gettype($valid_values));
                         if($valid_values) $metadata['valid_values'] = $valid_values;
                     }
