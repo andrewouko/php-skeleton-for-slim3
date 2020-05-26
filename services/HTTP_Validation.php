@@ -52,7 +52,7 @@ class HTTP_Validation {
                 if($val && is_bool($val)) return true; else throw new InvalidArgumentException($name . " must be a boolean. Provided: " . gettype($val) . ". Value provided: " . $val);
                 break;
             case 'file':
-                if($val && isset($val->$name->file) && is_file($val->$name->file)) return true; else throw new InvalidArgumentException($name . " must be a valid file. File property of input is " . isset($val->$name->file) ? "set." : " not set. File property of input is " . is_file($val->$name->file) ? " is a valid file." : " not a valid file.");
+                if($val && isset($val->$name->file) && is_file($val->$name->file)) return true; else throw new InvalidArgumentException($name . " must be a valid file. File property of input is " . isset($val->$name->file) ? "set." : " not set." . " File property of input is " . is_file($val->$name->file) ? " is a valid file." : " not a valid file.");
                 break;
             case 'optional':
                 if((isset($val) && (gettype($val) != null && !is_null($length) && (strlen($val) <= $length))) || !isset($val)) return true; else throw new \InvalidArgumentException($name . " is optional and should have length of " . $length . ". " . $value_provided);
