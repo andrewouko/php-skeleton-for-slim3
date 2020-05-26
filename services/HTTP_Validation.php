@@ -67,6 +67,12 @@ class HTTP_Validation {
         if($length_not_set || $length_set_string || $length_set_numeric){}else{
             throw new \InvalidArgumentException($name . " must have a length of " . $length . ". " . $value_provided);
         }
+
+        // VALIDATE VALID VALUES
+        if((count($valid_values) < 0 && strlen($val)) || (count($valid_values) && in_array($val, $valid_values))){}else{
+            throw new \InvalidArgumentException("Valid values for ". $name . " are: " . json_encode($valid_values));
+        }
+        return true;
     }
     function setParameters(array $parameters){
         $this->parameters = $parameters;
