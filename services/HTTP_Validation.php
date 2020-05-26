@@ -44,8 +44,8 @@ class HTTP_Validation {
                 if(is_int($val)){}else throw new \InvalidArgumentException($name . " must be an integer. " . $value_provided);
                 break;
             case 'date':
-                $val = DateTime::createFromFormat('Y-m-d', $val);
-                if($val && $val->format('Y-m-d') === $val) return true; else throw new InvalidArgumentException($name . " must be a valid date. Value provided: " . $val->format('Y-m-d'));
+                $date = DateTime::createFromFormat('Y-m-d', $val);
+                if($val && $date->format('Y-m-d') === $val) return true; else throw new InvalidArgumentException($name . " must be a valid date. Value provided: " . $val);
                 break;
             case 'boolean':
                 if($val && is_bool($val)) return true; else throw new InvalidArgumentException($name . " must be a boolean. Provided: " . gettype($val) . ". Value provided: " . $val);
