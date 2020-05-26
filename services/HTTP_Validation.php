@@ -58,7 +58,7 @@ class HTTP_Validation {
                 if((isset($val) && (gettype($val) != null && !is_null($length) && (strlen($val) <= $length))) || !isset($val)) return true; else throw new \InvalidArgumentException($name . " is optional and should have length of " . $length . ". " . $value_provided);
                 break;
             default:
-                throw new \InvalidArgumentException($name . " is using an unsupported type " . $type);
+                throw new \InvalidArgumentException($name . " is using an unsupported validation type " . $type);
         }
 
         // VALIDATE LENGTH
