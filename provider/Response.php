@@ -87,7 +87,7 @@ abstract class Response {
      * @param Google_Client $client
      * @return ResponseInterface
      */
-    protected function getResponse(Container $container, GuzzleRequest $request = null, Google_Client $client = null):ResponseInterface{
+    protected function handleResponse(Container $container, GuzzleRequest $request = null, Google_Client $client = null):ResponseInterface{
         $response_types = json_decode("VALID_RESPONSE_TYPES", true);
         if($this->response_type == $response_types[0])
             $response = $this->getGuzzleResponse($container, $request);

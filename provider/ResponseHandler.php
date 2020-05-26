@@ -25,7 +25,14 @@ class ResponseHandler extends Response {
             $this->request_input = $request_input;
         }
     }
-    function getResponse(Container $container, Google_Client $client = null):ResponseInterface{
+    /**
+     * Return the response based on the specified handling parameters
+     *
+     * @param Container $container
+     * @param Google_Client $client
+     * @return GuzzleHttp\Psr7\Request|array|Psr\Http\Message\ResponseInterface
+     */
+    function getResponse(Container $container, Google_Client $client = null){
         // get the request
         $request = $this->getRequest($container, $this->provider, $this->request_input);
 
@@ -34,7 +41,7 @@ class ResponseHandler extends Response {
             return $request;
         
         //get the response
-        $response = $this->getResponse($container, $request, $client);
+        $response = $this->handleResponse($container, $request, $client);
 
         // log the response
         if(isset($this->response_handling->log) && $this->response_handling->log == true){
