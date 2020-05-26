@@ -10,6 +10,7 @@ use Slim\Container;
 use Services\Utils;
 use SimpleXMLElement;
 use Google_Client;
+use Psr\Http\Message\ResponseInterface;
 
 class ResponseHandler extends Response {
     private $request_input, $provider, $slim_request;
@@ -24,7 +25,7 @@ class ResponseHandler extends Response {
             $this->request_input = $request_input;
         }
     }
-    function getResponse(Container $container, Google_Client $client = null){
+    function getResponse(Container $container, Google_Client $client = null):ResponseInterface{
         // get the request
         $request = $this->getRequest($container, $this->provider, $this->request_input);
 
