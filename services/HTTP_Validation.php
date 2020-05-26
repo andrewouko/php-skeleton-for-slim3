@@ -29,7 +29,8 @@ class HTTP_Validation {
         return true;
     }
     private function validateParameter(string $type, string $name, &$val, int $length = null, array $valid_values = []){
-        $value_provided = gettype($val) . " of length " . strlen($val) . " provided. Value provided: " . $val;
+        if(!is_object($val) || !is_array($val))
+            $value_provided = gettype($val) . " of length " . strlen($val) . " provided. Value provided: " . $val;
 
         // VAIDATE TYPE
         switch($type){
