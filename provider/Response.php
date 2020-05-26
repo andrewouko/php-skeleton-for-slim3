@@ -114,7 +114,7 @@ abstract class Response {
      * @return void
      */
     protected function logResponse(Container $container, ResponseInterface $response){
-        $response_types = json_decode("VALID_RESPONSE_TYPES", true);
+        $response_types = json_decode(VALID_RESPONSE_TYPES, true);
         if($this->response_type == $response_types[0])
             $this->logGuzzleResponse($container, $response);
         if($this->response_type == $response_types[1])
