@@ -109,7 +109,7 @@ class HTTP_Validation {
         $indexes_from_length = 0;
 
         // check whether the argument 1 is set to optional
-        if(isset($arguments[0]) && strtower($arguments[0]) == 'optional'){
+        if(isset($arguments[0]) && strtolower($arguments[0]) == 'optional'){
             $metadata['isOptional'] = true;
             // check whether the 2nd argument is the length or type parameter
             if(isset($arguments[1]) && is_string($arguments[1])){
