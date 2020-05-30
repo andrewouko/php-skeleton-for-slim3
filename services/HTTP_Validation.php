@@ -15,10 +15,9 @@ class HTTP_Validation {
     function validateInput(\stdClass $input){
         if(!isset($this->parameters) || empty($this->parameters)) throw new InvalidArgumentException("The parameters array is not set");
         array_walk($this->parameters, function($metadata, $param) use ($input){
-            if(!isset($input->$param)){
+            if(!isset($input->$param) && !\is_numeric($input->$param)){
                 if(!$metadata->isOptional) throw new \InvalidArgumentException($param . " is required");
             }
-            // if($metadata->type == 'numeric') $input->$param = (int) $input->$param;
             if($metadata instanceof \stdClass){
                 if(isset($metadata->validate) && is_callable($metadata->validate)){
                     return $metadata->validate($input->$param);
@@ -40,10 +39,11 @@ class HTTP_Validation {
                 if(is_string($val)){}else throw new \InvalidArgumentException($name . " must be a string. " . $value_provided);
                 break;
             case 'numeric':
-                if(is_int($val) || is_float($val)){}else throw new \InvalidArgumentException($name . " must be an int or float. " . $value_provided);
+                if(is_numeric($val)){}else throw new \InvalidArgumentException($name . " must be numeric. " . $value_provided);
                 break;
             case 'integer':
-                $val = (int) $val;
+                if(is_string($val))
+                    $val = (int) $val;
                 if(is_int($val)){}else throw new \InvalidArgumentException($name . " must be an integer. " . $value_provided);
                 break;
             case 'date':
