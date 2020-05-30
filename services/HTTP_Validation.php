@@ -15,8 +15,8 @@ class HTTP_Validation {
     function validateInput(\stdClass $input){
         if(!isset($this->parameters) || empty($this->parameters)) throw new InvalidArgumentException("The parameters array is not set");
         array_walk($this->parameters, function($metadata, $param) use ($input){
-            if(!isset($input->$param) && !\is_numeric($input->$param)){
-                if(!$metadata->isOptional) throw new \InvalidArgumentException($param . " is required");
+            if(!isset($input->$param)){
+                if(isset($metadata->isOptional) && !$metadata->isOptional) throw new \InvalidArgumentException($param . " is required");
             }
             if($metadata instanceof \stdClass){
                 if(isset($metadata->validate) && is_callable($metadata->validate)){
@@ -80,7 +80,7 @@ class HTTP_Validation {
     function setParameters(array $parameters){
         $this->parameters = $parameters;
     }
-    function getParameters($type = 'all'){
+    function getParameters($type = 'all'):array{
         $types = ['all', 'optional', 'required'];
         switch($type){
             case 'all':
