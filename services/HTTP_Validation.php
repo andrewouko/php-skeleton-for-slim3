@@ -16,7 +16,7 @@ class HTTP_Validation {
         if(!isset($this->parameters) || empty($this->parameters)) throw new InvalidArgumentException("The parameters array is not set");
         array_walk($this->parameters, function($metadata, $param) use ($input){
             if(!isset($input->$param)){
-                if(isset($metadata->isOptional) && !$metadata->isOptional) throw new \InvalidArgumentException($param . " is required");
+                if(!isset($metadata->isOptional) || !$metadata->isOptional) throw new \InvalidArgumentException($param . " is required");
             }
             if($metadata instanceof \stdClass){
                 if(isset($metadata->validate) && is_callable($metadata->validate)){
