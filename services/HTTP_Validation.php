@@ -30,7 +30,7 @@ class HTTP_Validation {
         });
         return true;
     }
-    private function validateParameter(string $type, string $name, bool $isOptional = false, &$val, int $length = null, array $valid_values = []){
+    private function validateParameter(string $type, string $name, &$val, int $length = null, array $valid_values = []){
         if(is_string($val) || is_numeric($val) || is_bool($val))
             $value_provided = gettype($val) . " of length " . strlen($val) . " provided. Value provided: " . $val;
 
