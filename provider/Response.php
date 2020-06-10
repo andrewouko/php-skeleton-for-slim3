@@ -134,11 +134,11 @@ abstract class Response {
         if($json_decoded_response) return $json_decoded_response;
 
         //handler for xml responses if necessary
-        if(preg_match("^(<([a-zA-Z0-9]+)([\s]+[a-zA-Z0-9]+="[a-zA-Z0-9]+")*>([^<]*([^<]*|(?1))[^<]*)*<\/\2>)$", $string_response)){
-            $xml_response = preg_replace("/(<\/?)(\w+):([^>]*>)/", "$1$2$3", $string_response);
-            $xml = new SimpleXMLElement($xml_response);
-            $body = $xml->xpath('//SBody')[0];
-            $array = json_decode(json_encode((array)$body), TRUE);
+        $xml_response = preg_replace("/(<\/?)(\w+):([^>]*>)/", "$1$2$3", $string_response);
+        libxml_use_internal_errors(true);
+        $sxe = simplexml_load_string($xml_response);
+        if($sxe){
+            $array = json_decode(json_encode($sxe), TRUE);
             return $array;
         }
         throw new RuntimeException("Unable to convert the response to an array. String representation of response: " . $string_response);
