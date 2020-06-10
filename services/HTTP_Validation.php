@@ -17,6 +17,7 @@ class HTTP_Validation {
         array_walk($this->parameters, function($metadata, $param) use ($input){
             if(!isset($input->$param)){
                 if(!isset($metadata->isOptional) || !$metadata->isOptional) throw new \InvalidArgumentException($param . " is required");
+                return;
             }
             if($metadata instanceof \stdClass){
                 if(isset($metadata->validate) && is_callable($metadata->validate)){
