@@ -96,7 +96,9 @@ return function (App $app) {
                 $document_content = Utils::formatJsonResponse('', $error_message);
                 $response = $response->withHeader('Content-Type', 'application/json');
             }
-            return $response->withStatus($header_status)->write($document_content);
+            $response = $response->withStatus($header_status)->write($document_content);
+            $c['response-logger']($response);
+            return $response;
         };
     };
 
