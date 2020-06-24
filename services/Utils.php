@@ -297,10 +297,8 @@ final class Utils{
     }
     static function formatIPAYJsonResponse(int $header_status, array $data = [], string $error = '', string $success_text = ''){
         if((empty($data) && empty($error)) || (count($data) && $error)) throw new InvalidArgumentException("Provide either the error or the data paramter for the json response");
-        foreach(['data', 'error'] as $var_name){
-            if(self::isJson($$var_name)){
-                $$var_name = json_decode($$var_name, true);
-            }
+        if(self::isJson($error)){
+            $error = json_decode($error, true);
         }
         if(count($data)){
             return self::formatIPAYSuccessResponse($header_status, $success_text, $data);
