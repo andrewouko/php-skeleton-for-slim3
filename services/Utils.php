@@ -295,21 +295,21 @@ final class Utils{
             return json_encode(['error' => $error], JSON_UNESCAPED_SLASHES);
         }
     }
-    static function formatIPAYJsonResponse(int $header_status, string $data = '', string $error = ''){
-        if((empty($data) && empty($error)) || ($data && $error)) throw new InvalidArgumentException("Provide either the error or the data paramter for the json response");
+    static function formatIPAYJsonResponse(int $header_status, array $data = [], string $error = '', string $success_text = ''){
+        if((empty($data) && empty($error)) || (count($data) && $error)) throw new InvalidArgumentException("Provide either the error or the data paramter for the json response");
         foreach(['data', 'error'] as $var_name){
             if(self::isJson($$var_name)){
                 $$var_name = json_decode($$var_name, true);
             }
         }
-        if($data){
-            return json_encode(['header_status' => $header_status, 'data' => $data], JSON_UNESCAPED_SLASHES);
+        if(count($data)){
+            return self::formatIPAYSuccessResponse($header_status, $success_text, $data);
         }
         if($error){
             return json_encode(['header_status' => $header_status, 'error' => $error], JSON_UNESCAPED_SLASHES);
         }
     }
-    static function formatIPAYSuccessResponse(int $header_status, string $text, array $payload){
+    private static function formatIPAYSuccessResponse(int $header_status, string $text, array $payload){
         return json_encode(array_merge([
             'header_status' => $header_status,
             'text' => $text

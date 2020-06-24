@@ -61,21 +61,38 @@ return function (App $app) {
     // DEFAULT ERROR HANDLING STRATEGY
     $container['errorHandling'] = function($c) {
         return function(Request $request, Exception $exception, Response $response, string $error_level = 'critical', int $header_status = 500, string $error_desc = 'Default Error Handler : Caught Error') use ($c) {
+            // init error
             $error_obj = new Error($request, $exception, $error_desc);
+
+            // set header status for the error (default is 500)
             if($exception instanceof DomainException){
                 $header_status = 401;
             }
             if($exception instanceof UnexpectedValueException){
                 $header_status = 400;
             }
+
+            // log error for debugging
             $error_logger = $c['error_logger'];
             Utils::logArrayContent($error_obj->error, $error_logger, $error_level);
+
+            // handle the response message back to the client
+            // use exception message by default
             $error_message = $error_obj->error['Message'];
-            $settings = $c->get('settings');
+            if(isset($error_obj->guzzle_http_response_body)){
+                // override default if a  Guzzle http response body is present
+                $error_message = $error_obj->guzzle_http_response_body;
+            }
+
             $document_content = null;
+
+            // check for an error formatter in the settings and use it if present
+            $settings = $c->get('settings');
             if(isset($settings['formatErrorResponse']) && is_callable($settings['formatErrorResponse'])){
                 $document_content = $settings['formatErrorResponse']($header_status, $error_message);
-            } else{
+            }
+            // otherwise use default formatting from the utilities
+            else{
                 $document_content = Utils::formatJsonResponse('', $error_message);
                 $response = $response->withHeader('Content-Type', 'application/json');
             }
