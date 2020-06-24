@@ -94,9 +94,8 @@ return function (App $app) {
             // otherwise use default formatting from the utilities
             else{
                 $document_content = Utils::formatJsonResponse('', $error_message);
-                $response = $response->withHeader('Content-Type', 'application/json');
             }
-            $response = $response->withStatus($header_status)->write($document_content);
+            $response = $response->withStatus($header_status)->withHeader('Content-Type', 'application/json')->write($document_content);
             $c['response-logger']($response);
             return $response;
         };
