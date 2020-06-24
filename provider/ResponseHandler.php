@@ -1,26 +1,24 @@
 <?php
 namespace Provider;
 
-use Slim\Http\Request;
-use InvalidArgumentException;
+use Psr\Http\Message\ServerRequestInterface as Request;
 use stdClass;
 use Provider\Provider;
 use RuntimeException;
 use Slim\Container;
 use Services\Utils;
-use SimpleXMLElement;
 use Google_Client;
-use Psr\Http\Message\ResponseInterface;
+use SebastianBergmann\ObjectEnumerator\InvalidArgumentException;
 
 class ResponseHandler extends Response {
-    private $request_input, $provider, $slim_request;
-    function __construct(callable $initProvider, Request $request, stdClass $response_handling = null, stdClass $request_input = null, string $response_type = 'guzzle_http_client'){
+    private $request_input, $provider;
+    function __construct(callable $initProvider, Request $request = null, stdClass $response_handling = null, stdClass $request_input = null, string $response_type = 'guzzle_http_client'){
         parent::__construct($response_type, $response_handling);
         $this->provider = $initProvider();
         if(!$this->provider instanceof Provider) throw new RuntimeException("The instance returned by the initProvider callable must be an instance of the Provider class");
-        $this->slim_request = $request;
         if(!$request_input){
-            $this->request_input = Utils::getRequestInput($this->slim_request);
+            if(is_null($request)) throw new InvalidArgumentException("A request of the type Psr\Http\Message\ServerRequestInterface is required to determine the request input. Otherwise provide an argument for the request_input.");
+            $this->request_input = Utils::getRequestInput($request);
         } else {
             $this->request_input = $request_input;
         }

@@ -139,7 +139,8 @@ abstract class Response {
         $sxe = simplexml_load_string($xml_response);
         if($sxe){
             $array = json_decode(json_encode($sxe), TRUE);
-            return $array;
+            if($array)
+                return $array;
         }
         throw new RuntimeException("Unable to convert the response to an array. String representation of response: " . $string_response);
     }
