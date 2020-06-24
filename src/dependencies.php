@@ -79,9 +79,9 @@ return function (App $app) {
             // handle the response message back to the client
             // use exception message by default
             $error_message = $error_obj->error['Message'];
-            if(isset($error_obj->guzzle_http_response_body)){
+            if(isset($error_obj->error['guzzle_http_response_body'])){
                 // override default if a  Guzzle http response body is present
-                $error_message = $error_obj->guzzle_http_response_body;
+                $error_message = $error_obj->error['guzzle_http_response_body'];
             }
 
             $document_content = null;
