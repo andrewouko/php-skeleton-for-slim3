@@ -24,13 +24,13 @@ class HTTP_Validation {
                     return $metadata->validate($input->$param);
                 } else {
                     if(!isset($metadata->type)) throw new \InvalidArgumentException("Cannot validate this parameter as it does not have a validation type hint");
-                    return $this->validateParameter($metadata->type, $param, $input->$param, isset($metadata->length) ? $metadata->length : null, isset($metadata->valid_values) ? $metadata->valid_values : []);
+                    return $this->validateParameter($metadata->type, $param, $input->$param, isset($metadata->length) ? $metadata->length : null, isset($metadata->valid_values) ? $metadata->valid_values : [], isset($metadata->regex) ? $metadata->regex : null);
                 }
             } else throw new \Exception("Metadata must be an instance of stdClass");
         });
         return true;
     }
-    private function validateParameter(string $type, string $name, &$val, int $length = null, array $valid_values = []){
+    private function validateParameter(string $type, string $name, &$val, int $length = null, array $valid_values = [], string $regex = null){
         if(is_string($val) || is_numeric($val) || is_bool($val))
             $value_provided = gettype($val) . " of length " . strlen($val) . " provided. Value provided: " . $val;
 
@@ -76,6 +76,12 @@ class HTTP_Validation {
         if((count($valid_values) < 1 && strlen($val)) || (count($valid_values) && in_array($val, $valid_values))){}else{
             throw new \InvalidArgumentException("Valid values for ". $name . " are: " . json_encode($valid_values));
         }
+
+        // VALIDATE REGEX
+        if($regex){
+            if(!\preg_match($regex, $val)) throw new InvalidArgumentException("The value provided for " . $name . "should be in the following format " . $regex);
+        }
+
         return true;
     }
     function setParameters(array $parameters){
@@ -131,9 +137,10 @@ class HTTP_Validation {
 
         if(isset($arguments[($indexes_from_length + 1)])) $length = $arguments[($indexes_from_length + 1)];
         if(isset($arguments[($indexes_from_length + 2)])) $valid_values = $arguments[($indexes_from_length + 2)];
+        if(isset($arguments[($indexes_from_length + 3)])) $regex = $arguments[($indexes_from_length + 3)];
         
         //validate the metadata arguments after optional (if set) and assign their values to metadata array
-        foreach(['type', 'length', 'valid_values'] as $arg){
+        foreach(['type', 'length', 'valid_values', 'regex'] as $arg){
             if(is_string($arg))
                 $arg = strtolower($arg);
             switch($arg){
@@ -152,6 +159,12 @@ class HTTP_Validation {
                     if(isset($valid_values)){
                         if(!is_array($valid_values) && count($valid_values)) throw new \InvalidArgumentException("The argument supplied to the 3rd parameter (valid_values) must be an array and is not empty. Provided: " . gettype($valid_values));
                         if($valid_values) $metadata['valid_values'] = $valid_values;
+                    }
+                    break;
+                case 'regex':
+                    if(isset($regex)){
+                        if(!is_string($regex) || !preg_match("/^\/.+\/[a-z]*$/i",$regex)) throw new \InvalidArgumentException("The argument supplied to the 4th parameter (regex) must be a string and valid Regex. Provided: " . gettype($regex) . " Value: " . strval($regex));
+                        if($regex) $metadata['regex'] = $regex;
                     }
                     break;
                 default:
