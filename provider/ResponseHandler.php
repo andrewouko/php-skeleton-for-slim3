@@ -9,6 +9,8 @@ use Slim\Container;
 use Services\Utils;
 use Google_Client;
 use SebastianBergmann\ObjectEnumerator\InvalidArgumentException;
+use GuzzleHttp\Psr7\Request as GuzzleRequest;
+use GuzzleHttp\Client as GuzzleClient;
 
 class ResponseHandler extends Response {
     private $request_input, $provider;
@@ -30,20 +32,20 @@ class ResponseHandler extends Response {
      * @param Google_Client $client
      * @return GuzzleHttp\Psr7\Request|array|Psr\Http\Message\ResponseInterface
      */
-    function getResponse(Container $container, Google_Client $client = null){
+    function getResponse(Logger $http_logger, GuzzleClient $guzzle_client = null, Google_Client $google_client = null, Logger $default_logger){
         // get the request
-        $request = $this->getRequest($container, $this->provider, $this->request_input);
+        $request = $this->getRequest($http_logger, $this->provider, $this->request_input);
 
         // return the request
         if(isset($this->response_handling->return_request) && $this->response_handling->return_request == true)
             return $request;
         
         //get the response
-        $response = $this->handleResponse($container, $request, $client);
+        $response = $this->handleResponse($http_logger, $request, $guzzle_client, $google_client);
 
         // log the response
         if(isset($this->response_handling->log) && $this->response_handling->log == true){
-            $this->logResponse($container, $response);
+            $this->logResponse($response, $http_logger);
         }
 
         //return an array representation of response
@@ -53,10 +55,10 @@ class ResponseHandler extends Response {
 
         // log additional information from the properties of the provider class
         if(isset($this->response_handling->log_additional_class_info) && count($this->response_handling->log_additional_class_info)){
-            $this->logProviderPublicProps($this->provider);
+            $this->logProviderPublicProps($this->provider, $default_logger);
         }
 
-        // return response as derived from the parent::getResponse method
+        // return response as derived from the parent::handleResponse method
         return $response;
     }
 }

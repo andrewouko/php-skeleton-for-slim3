@@ -15,6 +15,8 @@ use Namshi\Cuzzle\Formatter\CurlFormatter;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
 use Psr\Http\Message\ResponseInterface;
 use Google_Client;
+use Monolog\Logger;
+use GuzzleHttp\Client;
 
 abstract class Response {
     protected $response_handling, $response_type;
@@ -42,83 +44,84 @@ abstract class Response {
     /**
      * Get a guzzle request from a given provider and log the curl command equivalent for the request
      *
-     * @param Container $container
+     * @param Logger $http_logger
      * @param Provider $provider
      * @param stdClass $request_input
      * @return GuzzleRequest
      */
-    protected function getRequest(Container $container, Provider $provider, stdClass $request_input = null):GuzzleRequest{
+    protected function getRequest(Logger $http_logger, Provider $provider, stdClass $request_input = null):GuzzleRequest{
         // get the guzzle request for all operations in a unified manner
         $request = $provider->getRequest($request_input);
 
         //log the request as a curl command for debugging
         $curl_command = (new CurlFormatter())->format($request, []);
-        Utils::logArrayContent(['curl_command' => $curl_command], $container['http_logger'], 'debug');
+        Utils::logArrayContent(['curl_command' => $curl_command], $http_logger, 'debug');
 
         return $request;
     }
     /**
      * Process a request using the Guzzle client in the dependencies and return a response 
      *
-     * @param Container $container
+     * @param Client $client
      * @param GuzzleRequest $request
      * @return GuzzleResponse
      */
-    private function getGuzzleResponse(Container $container, GuzzleRequest $request):GuzzleResponse{
-        $response = $container['external_request_handler']($request);
+    private function getGuzzleResponse(Client $client, GuzzleRequest $request):GuzzleResponse{
+        $response = $client->send($request);
         return $response;
     }
     /**
      * Process a request using the google client and return a response
      *
-     * @param GuzzleRequest $request
      * @param Google_Client $client
+     * @param GuzzleRequest $request
      * @return ResponseInterface
      */
-    private function getGoogleResponse(GuzzleRequest $request, Google_Client $client):ResponseInterface{
+    private function getGoogleResponse(Google_Client $client, GuzzleRequest $request):ResponseInterface{
         $response =  $client->execute($request);
         return $response;
     }
     /**
      * Get the response based on the response type
      *
-     * @param Container $container
+     * @param Logger $http_logger
+     * @param Client $guzzle_client
      * @param GuzzleRequest $request
      * @param Google_Client $client
      * @return ResponseInterface
      */
-    protected function handleResponse(Container $container, GuzzleRequest $request = null, Google_Client $client = null):ResponseInterface{
+    protected function handleResponse(Logger $http_logger, GuzzleRequest $request, Client $guzzle_client = null, Google_Client $google_client = null):ResponseInterface{
+        Utils::logArrayContent(Utils::getGuzzleRequestInformation($request), $http_logger, 'info');
         $response_types = json_decode(VALID_RESPONSE_TYPES, true);
         if($this->response_type == $response_types[0])
-            $response = $this->getGuzzleResponse($container, $request);
+            $response = $this->getGuzzleResponse($guzzle_client, $request);
         if($this->response_type == $response_types[1])
-            $response = $this->getGoogleResponse($request, $client);
+            $response = $this->getGoogleResponse($google_client, $request);
         return $response;
     }
     /**
      * Log the response from the Guzzle client
      *
-     * @param Container $container
+     * @param Logger $logger
      * @param GuzzleResponse $response
      * @return void
      */
-    private function logGuzzleResponse(Container $container, GuzzleResponse $response){
-        $logger = $container->get('http_logger');
-        Utils::logArrayContent(Utils::getGuzzleResponseInformation($response), $logger, 'info');
+    private function logGuzzleResponse(Logger $http_logger, GuzzleResponse $response){
+        Utils::logArrayContent(Utils::getGuzzleResponseInformation($response), $http_logger, 'info');
     }
     /**
-     * Log the response based on the response type
+     * Log the response based on Response::response_type
      *
-     * @param Container $container
-     * @param Response $response
+     * @param ResponseInterface $response
+     * @param Logger $http_logger
      * @return void
      */
-    protected function logResponse(Container $container, ResponseInterface $response){
+    protected function logResponse(ResponseInterface $response, Logger $http_logger){
         $response_types = json_decode(VALID_RESPONSE_TYPES, true);
         if($this->response_type == $response_types[0])
-            $this->logGuzzleResponse($container, $response);
+            $this->logGuzzleResponse($http_logger, $response);
         if($this->response_type == $response_types[1])
-            $container['response-logger']($response);
+            Utils::logArrayContent(Utils::getResponseInformation($response), $http_logger, 'info');
     }
     /**
      * Convert a response to array
@@ -150,13 +153,13 @@ abstract class Response {
      * @param Provider $provider
      * @return void
      */
-    protected function logProviderPublicProps(Provider $provider){
+    protected function logProviderPublicProps(Provider $provider, Logger $default_logger){
         $log_content = [];
         foreach($this->response_handling->log_additional_class_info as $class_prop){
             if(isset($provider->$class_prop)){
                 $log_content[$class_prop] = $provider->$class_prop;
             }
         }
-        Utils::logArrayContent($log_content, $container['default_logger'], 'info');
+        Utils::logArrayContent($log_content, $default_logger, 'info');
     }
 }
