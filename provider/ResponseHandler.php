@@ -10,6 +10,7 @@ use Google_Client;
 use SebastianBergmann\ObjectEnumerator\InvalidArgumentException;
 use GuzzleHttp\Client as GuzzleClient;
 use Monolog\Logger;
+use Psr\Http\Message\ResponseInterface;
 
 class ResponseHandler extends Response {
     private $request_input, $provider;
@@ -31,7 +32,7 @@ class ResponseHandler extends Response {
      * @param GuzzleClient $guzzle_client
      * @param Google_Client $google_client
      * @param Logger $default_logger
-     * @return void
+     * @return Request|array|ResponseInterface
      */
     function getResponse(Logger $http_logger, GuzzleClient $guzzle_client = null, Google_Client $google_client = null, Logger $default_logger){
         // get the request
