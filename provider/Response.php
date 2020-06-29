@@ -18,7 +18,7 @@ abstract class Response {
     static $GuzzleResponse = 'guzzzle_http_client';
     static $GoogleResponse = 'google_client';
     function __construct(string $response_type, stdClass $response_handling = null){
-        if($response_type != self::$GoogleResponse || $response_type != self::$GuzzleResponse) throw new InvalidArgumentException("The response type must be one of " . json_encode([self::$GoogleResponse, self::$GuzzleResponse]));
+        if($response_type != self::$GoogleResponse || $response_type != self::$GuzzleResponse) throw new InvalidArgumentException("The response type must be one of " . json_encode([self::$GoogleResponse, self::$GuzzleResponse]) . ". Provided: " . $response_type);
         $this->response_type = $response_type;
         foreach(['log', 'decode_response', 'return_request', 'log_additional_class_info'] as $param){
             if(isset($response_handling->$param)){
