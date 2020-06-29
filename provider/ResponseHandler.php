@@ -5,11 +5,9 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use stdClass;
 use Provider\Provider;
 use RuntimeException;
-use Slim\Container;
 use Services\Utils;
 use Google_Client;
 use SebastianBergmann\ObjectEnumerator\InvalidArgumentException;
-use GuzzleHttp\Psr7\Request as GuzzleRequest;
 use GuzzleHttp\Client as GuzzleClient;
 
 class ResponseHandler extends Response {
@@ -28,9 +26,11 @@ class ResponseHandler extends Response {
     /**
      * Return the response based on the specified handling parameters
      *
-     * @param Container $container
-     * @param Google_Client $client
-     * @return GuzzleHttp\Psr7\Request|array|Psr\Http\Message\ResponseInterface
+     * @param Logger $http_logger
+     * @param GuzzleClient $guzzle_client
+     * @param Google_Client $google_client
+     * @param Logger $default_logger
+     * @return void
      */
     function getResponse(Logger $http_logger, GuzzleClient $guzzle_client = null, Google_Client $google_client = null, Logger $default_logger){
         // get the request

@@ -1,16 +1,11 @@
 <?php
 namespace Provider;
 
-
-define("VALID_RESPONSE_TYPES", json_encode(['guzzle_http_client', 'google_client']));
-
 use GuzzleHttp\Psr7\Request as GuzzleRequest;
 use InvalidArgumentException;
 use stdClass;
 use Provider\Provider;
-use Slim\Container;
 use Services\Utils;
-use SimpleXMLElement;
 use Namshi\Cuzzle\Formatter\CurlFormatter;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
 use Psr\Http\Message\ResponseInterface;
@@ -20,8 +15,10 @@ use GuzzleHttp\Client;
 
 abstract class Response {
     protected $response_handling, $response_type;
+    static $GuzzleResponse = 'guzzzle_http_client';
+    static $GoogleResponse = 'google_client';
     function __construct(string $response_type, stdClass $response_handling = null){
-        if(!in_array($response_type, json_decode(VALID_RESPONSE_TYPES, true))) throw new InvalidArgumentException("The response type must be one of " . VALID_RESPONSE_TYPES);
+        if($response_type != self::$GoogleResponse || $response_type != self::$GuzzleResponse) throw new InvalidArgumentException("The response type must be one of " . json_encode([self::$GoogleResponse, self::$GuzzleResponse]));
         $this->response_type = $response_type;
         foreach(['log', 'decode_response', 'return_request', 'log_additional_class_info'] as $param){
             if(isset($response_handling->$param)){
@@ -92,10 +89,9 @@ abstract class Response {
      */
     protected function handleResponse(Logger $http_logger, GuzzleRequest $request, Client $guzzle_client = null, Google_Client $google_client = null):ResponseInterface{
         Utils::logArrayContent(Utils::getGuzzleRequestInformation($request), $http_logger, 'info');
-        $response_types = json_decode(VALID_RESPONSE_TYPES, true);
-        if($this->response_type == $response_types[0])
+        if($this->response_type == self::$GuzzleResponse)
             $response = $this->getGuzzleResponse($guzzle_client, $request);
-        if($this->response_type == $response_types[1])
+        if($this->response_type == self::$GoogleResponse)
             $response = $this->getGoogleResponse($google_client, $request);
         return $response;
     }
@@ -117,10 +113,9 @@ abstract class Response {
      * @return void
      */
     protected function logResponse(ResponseInterface $response, Logger $http_logger){
-        $response_types = json_decode(VALID_RESPONSE_TYPES, true);
-        if($this->response_type == $response_types[0])
+        if($this->response_type == self::$GuzzleResponse)
             $this->logGuzzleResponse($http_logger, $response);
-        if($this->response_type == $response_types[1])
+        if($this->response_type == self::$GoogleResponse)
             Utils::logArrayContent(Utils::getResponseInformation($response), $http_logger, 'info');
     }
     /**
