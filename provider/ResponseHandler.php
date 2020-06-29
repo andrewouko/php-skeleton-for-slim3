@@ -9,6 +9,7 @@ use Services\Utils;
 use Google_Client;
 use SebastianBergmann\ObjectEnumerator\InvalidArgumentException;
 use GuzzleHttp\Client as GuzzleClient;
+use Monolog\Logger;
 
 class ResponseHandler extends Response {
     private $request_input, $provider;
