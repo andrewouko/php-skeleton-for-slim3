@@ -77,6 +77,7 @@ abstract class Response {
      * @return ResponseInterface
      */
     private function getGoogleResponse(Google_Client $client, GuzzleRequest $request):ResponseInterface{
+        if(!$client->shouldDefer()) $client->setDefer(true);
         $response =  $client->execute($request);
         return $response;
     }

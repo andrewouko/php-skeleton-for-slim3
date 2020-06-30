@@ -137,8 +137,8 @@ return function (App $app) {
     };
 
     // Service factory for the ORM
-    $container['db'] = function ($c) use ($settings) {
-        return function(array $connection_settings) use ($settings) {
+    $container['db'] = function ($c){
+        return function(array $connection_settings){
             $capsule = new \Illuminate\Database\Capsule\Manager;
             $capsule->addConnection($connection_settings);
             $capsule->setAsGlobal();

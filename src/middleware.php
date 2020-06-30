@@ -1,18 +1,21 @@
 <?php
 use Slim\App;
-use Slim\Container;
 use Services\Utils;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
+use Monolog\Logger;
 
-function logServerState(Container $container)  {
-    $logger = $container->get('system_logger');
+function logServerState(Logger $logger)  {
     Utils::logArrayContent(array_merge(Utils::getServerState()), $logger, 'debug');
 }
-function logRequestInformation(Container $container, Request $request) {
-    $logger = $container->get('http_logger');
+function logRequestInformation(Logger $logger, Request $request) {
     $request_inforamtion = Utils::getRequestInformation($request);
     Utils::logArrayContent($request_inforamtion, $logger, 'debug');
+}
+
+function logIPAddressInformation(Request $request, Logger $logger){
+    $ipAddress = $request->getAttribute('ip_address');
+    Utils::logArrayContent(['ip_address' => $ipAddress], $logger, 'info');
 }
 
 $middlewareHandler = function(string $name, array $middleware_callables, App $app, Request $request, Response $response){
@@ -30,11 +33,17 @@ $middlewareHandler = function(string $name, array $middleware_callables, App $ap
 };
 
 return function (App $app, array $entry_middleware_callables = [], array $exit_middleware_callables = []) use ($middlewareHandler) {
+    // ip address middleware
+    $checkProxyHeaders = true;
+    $trustedProxies = ['10.0.0.1', '10.0.0.2'];
+    $app->add(new RKA\Middleware\IpAddress($checkProxyHeaders, $trustedProxies));
+
     // entry middleware
     $app->add(function (Request $request, Response $response, callable $next) use ($app, $entry_middleware_callables, $middlewareHandler) {
         $container = $app->getContainer();
-        logServerState($container);
-        logRequestInformation($container, $request);
+        logIPAddressInformation($request, $container->get('http_logger'));
+        logServerState($container->get('system_logger'));
+        logRequestInformation($container->get('http_logger'), $request);
         $middleware_response = $middlewareHandler('Entry Middleware', $entry_middleware_callables, $app, $request, $response);
         if($middleware_response){
             return $middleware_response;
