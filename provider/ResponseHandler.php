@@ -14,7 +14,8 @@ use Psr\Http\Message\ResponseInterface;
 
 class ResponseHandler extends Response {
     private $request_input, $provider;
-    function __construct(callable $initProvider, Request $request = null, stdClass $response_handling = null, stdClass $request_input = null, string $response_type = 'guzzle_http_client'){
+    function __construct(callable $initProvider, Request $request = null, stdClass $response_handling = null, stdClass $request_input = null, string $response_type = null){
+        if(!$response_type) $response_type = Response::$GuzzleResponse;
         parent::__construct($response_type, $response_handling);
         $this->provider = $initProvider();
         if(!$this->provider instanceof Provider) throw new RuntimeException("The instance returned by the initProvider callable must be an instance of the Provider class");

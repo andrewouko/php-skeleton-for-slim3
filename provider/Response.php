@@ -12,10 +12,11 @@ use Psr\Http\Message\ResponseInterface;
 use Google_Client;
 use Monolog\Logger;
 use GuzzleHttp\Client;
+use RuntimeException;
 
 abstract class Response {
     protected $response_handling, $response_type;
-    static $GuzzleResponse = 'guzzzle_http_client';
+    static $GuzzleResponse = 'guzzle_http_client';
     static $GoogleResponse = 'google_client';
     function __construct(string $response_type, stdClass $response_handling = null){
         if($response_type != self::$GoogleResponse || $response_type != self::$GuzzleResponse) throw new InvalidArgumentException("The response type must be one of " . json_encode([self::$GoogleResponse, self::$GuzzleResponse]) . ". Provided: " . $response_type);
