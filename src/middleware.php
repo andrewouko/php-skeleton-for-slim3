@@ -15,7 +15,8 @@ function logRequestInformation(Logger $logger, Request $request) {
 
 function logIPAddressInformation(Request $request, Logger $logger){
     $ipAddress = $request->getAttribute('ip_address');
-    Utils::logArrayContent(['ip_address' => $ipAddress], $logger, 'info');
+    $ip_information = ['REMOTE_ADDR' => $_SERVER['REMOTE_ADDR'], 'IP_Address' => $ipAddress];
+    Utils::logArrayContent($ip_information, $logger, 'info');
 }
 
 $middlewareHandler = function(string $name, array $middleware_callables, App $app, Request $request, Response $response){
@@ -36,7 +37,7 @@ return function (App $app, array $entry_middleware_callables = [], array $exit_m
     // ip address middleware
     $checkProxyHeaders = true;
     $trustedProxies = ['10.0.0.1', '10.0.0.2'];
-    
+
     $app->add(new RKA\Middleware\IpAddress($checkProxyHeaders, $trustedProxies));
 
     // entry middleware
