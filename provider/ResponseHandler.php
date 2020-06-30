@@ -35,7 +35,7 @@ class ResponseHandler extends Response {
      * @param Logger $default_logger
      * @return Request|array|ResponseInterface
      */
-    function getResponse(Logger $http_logger, GuzzleClient $guzzle_client = null, Google_Client $google_client = null, Logger $default_logger){
+    function getResponse(Logger $http_logger, GuzzleClient $guzzle_client = null, Google_Client $google_client = null, Logger $default_logger = null){
         // get the request
         $request = $this->getRequest($http_logger, $this->provider, $this->request_input);
 
