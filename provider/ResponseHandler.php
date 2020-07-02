@@ -64,4 +64,12 @@ class ResponseHandler extends Response {
         // return response as derived from the parent::handleResponse method
         return $response;
     }
+    static function processRequest(callable $initProvider, string $class, Request $request, Logger $http_logger, GuzzleClient $guzzle_client = null, Google_Client $google_client = null, Logger $default_logger = null, stdClass $provider_initiation = null, stdClass $response_handling = null) {
+        
+        $response_handler =  new ResponseHandler($initProvider, $request, $response_handling, isset($provider_initiation->request_input) ? $provider_initiation->request_input : null);
+
+        $api_response = $response_handler->getResponse($http_logger, $guzzle_client, $google_client, $default_logger);
+
+        return $api_response;
+    }
 }
