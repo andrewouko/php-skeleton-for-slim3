@@ -53,7 +53,7 @@ class ResponseHandler extends Response {
 
         //return an array representation of response
         if(isset($this->response_handling->decode_response) && $this->response_handling->decode_response == true){
-            return $this->toArray($response);
+            return $this->decodeResponse($response);
         }
 
         // log additional information from the properties of the provider class

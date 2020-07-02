@@ -122,12 +122,12 @@ abstract class Response {
             Utils::logArrayContent(Utils::getResponseInformation($response), $http_logger, 'info');
     }
     /**
-     * Convert a response to array
+     * Convert a response to array or fallback to string if impossible to cast to array
      *
      * @param ResponseInterface $response
-     * @return array
+     * @return array|string
      */
-    protected function toArray(ResponseInterface $response):array{
+    protected function decodeResponse(ResponseInterface $response){
         $string_response = (string) $response->getBody();
 
         //handler for json responses
@@ -143,7 +143,7 @@ abstract class Response {
             if($array)
                 return $array;
         }
-        throw new RuntimeException("Unable to convert the response to an array. String representation of response: " . $string_response);
+        return $string_response;
     }
     /**
      * Log the public properties of the Provider class

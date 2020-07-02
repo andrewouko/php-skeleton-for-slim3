@@ -15,7 +15,7 @@ class HTTP_Validation {
     function validateInput(\stdClass $input){
         if(!isset($this->parameters) || empty($this->parameters)) throw new InvalidArgumentException("The parameters array is not set");
         array_walk($this->parameters, function($metadata, $param) use ($input){
-            if(!isset($input->$param)){
+            if(!isset($input->$param) || (isset($input->$param) && empty($input->$param))){
                 if(!isset($metadata->isOptional) || !$metadata->isOptional) throw new \InvalidArgumentException($param . " is required");
                 return;
             }
