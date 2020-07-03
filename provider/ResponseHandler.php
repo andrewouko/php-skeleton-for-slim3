@@ -4,7 +4,6 @@ namespace Provider;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use stdClass;
 use Provider\Provider;
-use RuntimeException;
 use Services\Utils;
 use Google_Client;
 use SebastianBergmann\ObjectEnumerator\InvalidArgumentException;
@@ -14,11 +13,10 @@ use Psr\Http\Message\ResponseInterface;
 
 class ResponseHandler extends Response {
     private $request_input, $provider;
-    function __construct(callable $initProvider, Request $request = null, stdClass $response_handling = null, stdClass $request_input = null, string $response_type = null){
+    function __construct(Provider $provider, Request $request = null, stdClass $response_handling = null, stdClass $request_input = null, string $response_type = null){
         if(!$response_type) $response_type = Response::$GuzzleResponse;
         parent::__construct($response_type, $response_handling);
-        $this->provider = $initProvider();
-        if(!$this->provider instanceof Provider) throw new RuntimeException("The instance returned by the initProvider callable must be an instance of the Provider class");
+        $this->provider = $provider;
         if(!$request_input){
             if(is_null($request)) throw new InvalidArgumentException("A request of the type Psr\Http\Message\ServerRequestInterface is required to determine the request input. Otherwise provide an argument for the request_input.");
             $this->request_input = Utils::getRequestInput($request);
@@ -78,9 +76,9 @@ class ResponseHandler extends Response {
      * @param stdClass $response_handling
      * @return Request|array|ResponseInterface
      */
-    static function processRequest(callable $initProvider, string $class, Request $request, Logger $http_logger, stdClass $provider_initiation = null, stdClass $response_handling = null, GuzzleClient $guzzle_client = null, Google_Client $google_client = null, Logger $default_logger = null) {
+    static function processRequest(Provider $provider, Request $request, Logger $http_logger, stdClass $provider_initiation = null, stdClass $response_handling = null, GuzzleClient $guzzle_client = null, Google_Client $google_client = null, Logger $default_logger = null) {
         
-        $response_handler =  new ResponseHandler($initProvider, $request, $response_handling, isset($provider_initiation->request_input) ? $provider_initiation->request_input : null);
+        $response_handler =  new ResponseHandler($provider, $request, $response_handling, isset($provider_initiation->request_input) ? $provider_initiation->request_input : null);
 
         $api_response = $response_handler->getResponse($http_logger, $guzzle_client, $google_client, $default_logger);
 
