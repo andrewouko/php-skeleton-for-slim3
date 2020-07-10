@@ -132,7 +132,7 @@ return function (App $app) {
                 if(!isset($_ENV[$env_var])) throw new RuntimeException("The " . $env_var . " environment variable is not set. It is required to init the PusherJS server.");
             }
             $pusher = new Pusher\Pusher($_ENV['APP_KEY'], $_ENV['APP_SECRET'], $_ENV['APP_ID'], array('cluster' => $_ENV['APP_CLUSTER']));
-            $pusher->trigger($pusher_channel_name, $_SERVER['REMOTE_ADDR'] . '|' . $event_name, array('message' => json_encode(['status' => $status, 'message' => $message])));
+            $pusher->trigger($pusher_channel_name, $_SERVER['REMOTE_ADDR'] . '|' . $_SERVER['HTTP_USER_AGENT'] . '|' . $event_name, array('message' => json_encode(['status' => $status, 'message' => $message])));
         };
     };
 
