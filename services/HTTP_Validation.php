@@ -60,6 +60,9 @@ class HTTP_Validation {
             // case 'optional':
             //     if((isset($val) && (gettype($val) != null && !is_null($length) && (strlen($val) <= $length))) || !isset($val)) return true; else throw new \InvalidArgumentException($name . " is optional and should have length of " . $length . ". " . $value_provided);
             //     break;
+            case 'email':
+                if($val && filter_var($val, FILTER_VALIDATE_EMAIL)) return true; else throw new InvalidArgumentException($name . " must be a valid email. Value provided: " . $val);
+                break;
             default:
                 throw new \InvalidArgumentException($name . " is using an unsupported validation type " . $type);
         }
