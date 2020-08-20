@@ -64,10 +64,12 @@ return function (App $app) {
             // init error
             $error_obj = new Error($request, $exception, $error_desc);
 
-            // set header status for the error (default is 500)
+            // Set header status for the error (default is 500)
+            // Forbidden
             if($exception instanceof DomainException){
                 $header_status = 401;
             }
+            // Bad Request
             if($exception instanceof UnexpectedValueException){
                 $header_status = 400;
             }

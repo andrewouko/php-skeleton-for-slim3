@@ -301,21 +301,6 @@ final class Utils{
         // header('Location: '. $url . '?' . $key . '=' . $message);
         return $response->withRedirect($url . '?' . $key . '=' . $message);
     }
-    static function generateHash($input, string $hash_key, string $algo, bool $useBuildQuery = true){
-        $datastring = '';
-        if($input instanceof stdClass){
-            $input = json_decode(json_encode($input), true);
-            unset($input['hash']);
-            ksort($input);
-            if($useBuildQuery)
-                $datastring = http_build_query($input);
-            else
-                $datastring = implode('', $input);
-        } else if(is_string($input)){
-            $datastring = $input;
-        } else throw new InvalidArgumentException("The input must be either of stdClass or string. Provided: " . gettype($input));
-        return hash_hmac($algo, $datastring , $hash_key);
-    }
     static function withAdditionalHeaders(Response $response, array $additional_headers){
         foreach($additional_headers as $header){
             $header = explode(':', $header);
