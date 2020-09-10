@@ -4,6 +4,7 @@ use Services\Utils;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Monolog\Logger;
+use Slim\Middleware\ContentLengthMiddleware;
 
 function logServerState(Logger $logger)  {
     Utils::logArrayContent(array_merge(Utils::getServerState()), $logger, 'debug');
@@ -37,8 +38,11 @@ return function (App $app, array $entry_middleware_callables = [], array $exit_m
     // ip address middleware
     $checkProxyHeaders = true;
     $trustedProxies = ['10.0.0.1', '10.0.0.2'];
-
     $app->add(new RKA\Middleware\IpAddress($checkProxyHeaders, $trustedProxies));
+
+    // Content length middleware
+    $contentLengthMiddleware = new ContentLengthMiddleware();
+    $app->add($contentLengthMiddleware);
 
     // entry middleware
     $app->add(function (Request $request, Response $response, callable $next) use ($app, $entry_middleware_callables, $middlewareHandler) {
