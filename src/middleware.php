@@ -40,10 +40,6 @@ return function (App $app, array $entry_middleware_callables = [], array $exit_m
     $trustedProxies = ['10.0.0.1', '10.0.0.2'];
     $app->add(new RKA\Middleware\IpAddress($checkProxyHeaders, $trustedProxies));
 
-    // Content length middleware
-    $contentLengthMiddleware = new ContentLengthMiddleware();
-    $app->add($contentLengthMiddleware);
-
     // entry middleware
     $app->add(function (Request $request, Response $response, callable $next) use ($app, $entry_middleware_callables, $middlewareHandler) {
         $container = $app->getContainer();
