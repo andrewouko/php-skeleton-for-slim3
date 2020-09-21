@@ -63,6 +63,10 @@ class HTTP_Validation {
             case 'email':
                 if($val && filter_var($val, FILTER_VALIDATE_EMAIL)) return true; else throw new InvalidArgumentException($name . " must be a valid email. Value provided: " . $val);
                 break;
+            case 'datetime':
+                $date = DateTime::createFromFormat('Y-m-d H:i:s', $val);
+                if($val && $date->format('Y-m-d H:i:s') === $val) return true; else throw new InvalidArgumentException($name . " must be a valid datetime. Value provided: " . $val);
+                break;
             default:
                 throw new \InvalidArgumentException($name . " is using an unsupported validation type " . $type);
         }
