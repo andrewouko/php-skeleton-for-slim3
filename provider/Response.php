@@ -52,9 +52,12 @@ abstract class Response {
         // get the guzzle request for all operations in a unified manner
         $request = $provider->getRequest($request_input);
 
-        //log the request as a curl command for debugging
-        $curl_command = (new CurlFormatter())->format($request, []);
-        Utils::logArrayContent(['curl_command' => $curl_command], $http_logger, 'debug');
+        //log the request as a curl command for debugging if it is less than 131072 bytes
+        $body = $request->getBody();
+        if($body->getSize() < 131072){
+            $curl_command = (new CurlFormatter())->format($request, []);
+            Utils::logArrayContent(['curl_command' => $curl_command], $http_logger, 'debug');
+        }
 
         return $request;
     }

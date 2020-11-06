@@ -2,8 +2,4 @@
 /logs/*
 project-outline
 .env
-/Provider/*
-!/Provider/.env
-!/Provider/Provider.php
-!/Provider/ProviderInterface.php
 /public
